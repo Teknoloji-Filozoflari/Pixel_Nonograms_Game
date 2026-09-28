@@ -6,6 +6,8 @@ from PySide6.QtWidgets import QWidget
 
 from pixel_nonograms.core import EditorDraft
 
+from .theme import contrasting_ink, theme_color
+
 
 class EditorCanvas(QWidget):
     changed = Signal()
@@ -64,14 +66,18 @@ class EditorCanvas(QWidget):
     def _paint_clue(self, painter: QPainter, clue, x: float, y: float) -> None:
         color_id = getattr(clue, "color_id", 1)
         color = QColor(self.draft.palette[color_id - 1])
-        painter.setPen(color.lighter(170) if len(self.draft.palette) > 1 else QColor("#E8BD78"))
+        if len(self.draft.palette) > 1:
+            painter.fillRect(int(x - 9), int(y - 10), 18, 20, color)
+            painter.setPen(contrasting_ink(color))
+        else:
+            painter.setPen(theme_color(self, "ink"))
         painter.drawText(
             int(x - 9), int(y - 10), 18, 20, Qt.AlignmentFlag.AlignCenter, str(clue.length)
         )
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
-        painter.fillRect(event.rect(), QColor("#171D24"))
+        painter.fillRect(event.rect(), theme_color(self, "paper"))
         painter.setFont(QFont("Sans", 11, QFont.Weight.Bold))
         size = self.cell_size
         left, top = self.left_margin, self.top_margin
@@ -88,7 +94,9 @@ class EditorCanvas(QWidget):
                     top + y * size,
                     size,
                     size,
-                    QColor(self.draft.palette[color_id - 1]) if color_id else QColor("#202830"),
+                    QColor(self.draft.palette[color_id - 1])
+                    if color_id
+                    else theme_color(self, "board"),
                 )
                 if self.hover == (x, y):
                     painter.fillRect(
@@ -96,13 +104,19 @@ class EditorCanvas(QWidget):
                     )
         for x in range(max(0, x0), min(self.draft.width, x1) + 1):
             painter.setPen(
-                QPen(QColor("#B79A69") if x % 5 == 0 else QColor("#68757B"), 2 if x % 5 == 0 else 1)
+                QPen(
+                    theme_color(self, "grid_major") if x % 5 == 0 else theme_color(self, "grid"),
+                    2 if x % 5 == 0 else 1,
+                )
             )
             edge = left + x * size
             painter.drawLine(edge, top, edge, top + self.draft.height * size)
         for y in range(max(0, y0), min(self.draft.height, y1) + 1):
             painter.setPen(
-                QPen(QColor("#B79A69") if y % 5 == 0 else QColor("#68757B"), 2 if y % 5 == 0 else 1)
+                QPen(
+                    theme_color(self, "grid_major") if y % 5 == 0 else theme_color(self, "grid"),
+                    2 if y % 5 == 0 else 1,
+                )
             )
             edge = top + y * size
             painter.drawLine(left, edge, left + self.draft.width * size, edge)
@@ -180,7 +194,7 @@ class EditorPreview(QWidget):
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
-        painter.fillRect(event.rect(), QColor("#171D24"))
+        painter.fillRect(event.rect(), theme_color(self, "paper"))
         size = min((self.width() - 24) / self.draft.width, (self.height() - 24) / self.draft.height)
         left = (self.width() - size * self.draft.width) / 2
         top = (self.height() - size * self.draft.height) / 2
@@ -189,7 +203,7 @@ class EditorPreview(QWidget):
             int(top),
             int(size * self.draft.width),
             int(size * self.draft.height),
-            QColor("#202830"),
+            theme_color(self, "board"),
         )
         for y, row in enumerate(self.draft.solution):
             for x, color_id in enumerate(row):

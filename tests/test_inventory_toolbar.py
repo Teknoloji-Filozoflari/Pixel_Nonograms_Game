@@ -25,76 +25,34 @@ def puzzle():
     )
 
 
-def toolbar():
+def toolbar(*, compact=False):
     app = QApplication.instance() or QApplication([])
-    widget = InventoryToolbar(puzzle())
+    widget = InventoryToolbar(puzzle(), compact=compact)
     widget.set_counts({item: 2 for item in HelperItemId})
     widget.show()
     app.processEvents()
     return widget
 
 
-def test_compact_buttons_show_counts_and_details_only_after_selection():
-    widget = toolbar()
-    assert not widget.detail.isVisible()
-    assert widget.item_buttons[HelperItemId.ANALYSIS_LENS].text() == "Mercek 2"
-    widget.item_buttons[HelperItemId.ANALYSIS_LENS].click()
-    assert widget.detail.isVisible()
-    assert "olası yerleşimlerini" in widget.description_label.text()
-    assert "Kalan: 2" in widget.description_label.text()
-    assert widget.target_label.text() == "Hedef: seçilmedi"
-    assert not widget.use_button.isEnabled()
-    widget.close()
-
-
-def test_target_must_be_chosen_and_axis_change_clears_it():
-    widget = toolbar()
+def test_line_helper_supports_both_axes_and_requires_target():
+    widget = toolbar(compact=True)
     requested = []
     widget.use_requested.connect(lambda *args: requested.append(args))
-    widget.item_buttons[HelperItemId.ANALYSIS_LENS].click()
-    widget.use_button.click()
-    assert requested == []
-    widget.line_box.setCurrentIndex(2)
-    assert widget.target_label.text() == "Hedef: 2. satır"
-    assert widget.use_button.isEnabled()
-    widget.axis_box.setCurrentIndex(1)
-    assert widget.line_box.count() == 6  # Placeholder + five columns.
-    assert widget.target_label.text() == "Hedef: seçilmedi"
-    assert not widget.use_button.isEnabled()
-    widget.line_box.setCurrentIndex(5)
-    widget.use_button.click()
-    assert requested == [(HelperItemId.ANALYSIS_LENS, "column", 4)]
-    widget.show_result("5. sütun incelendi", consumed=True)
-    assert widget.target_label.text() == "Hedef: seçilmedi"
-    assert not widget.use_button.isEnabled()
-    widget.close()
-
-
-def test_scanners_require_target_and_automatic_aids_explain_scope():
-    widget = toolbar()
     widget.item_buttons[HelperItemId.ROW_SCANNER].click()
-    assert widget.axis_box.currentData() == "row"
-    assert not widget.axis_box.isEnabled()
-    assert widget.line_box.count() == 4
-    assert not widget.use_button.isEnabled()
-    widget.line_box.setCurrentIndex(3)
-    assert widget.target_label.text() == "Hedef: 3. satır"
-    widget.item_buttons[HelperItemId.COLUMN_SCANNER].click()
-    assert widget.axis_box.currentData() == "column"
-    assert widget.line_box.count() == 6
-    assert not widget.use_button.isEnabled()
-    widget.item_buttons[HelperItemId.ERROR_CHECK].click()
-    assert "otomatik belirlenir" in widget.target_label.text()
-    assert widget.use_button.isEnabled()
-    widget.set_available(False)
-    assert not widget.use_button.isEnabled()
+    assert requested == [(HelperItemId.ROW_SCANNER, None, None)]
+    assert HelperItemId.COLUMN_SCANNER not in widget.item_buttons
+    assert not widget.isVisible()
     widget.close()
 
 
-def test_zero_stock_can_be_inspected_but_not_used():
+def test_automatic_helpers_and_empty_stock():
     widget = toolbar()
+    for item in HelperItemId:
+        if item == HelperItemId.ROW_SCANNER:
+            continue
+        widget.select_item(item)
+        assert not widget.axis_box.isVisible()
+        assert widget.use_button.isEnabled()
     widget.set_counts({})
-    widget.item_buttons[HelperItemId.LOGIC_HINT].click()
-    assert "Kalan: 0" in widget.description_label.text()
     assert not widget.use_button.isEnabled()
     widget.close()

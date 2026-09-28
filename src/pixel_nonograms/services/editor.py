@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from pixel_nonograms.core import Difficulty, EditorDraft, Puzzle
+from pixel_nonograms.core.compact import compact_puzzle
 from pixel_nonograms.importer import read_puzzle, write_puzzle
 from pixel_nonograms.solver import SolveStatus, validate_unique_solution
 
@@ -37,6 +38,7 @@ def save_editor_puzzle(
         difficulty=difficulty,
         tags=tags,
     )
+    puzzle = compact_puzzle(puzzle)[0]
     result = validate_unique_solution(
         puzzle, timeout_seconds=timeout_seconds, node_limit=node_limit
     )

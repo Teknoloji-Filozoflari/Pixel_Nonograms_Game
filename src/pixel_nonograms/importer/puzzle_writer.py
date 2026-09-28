@@ -107,7 +107,8 @@ def write_puzzle(
                 _zip_entry(archive, name, data)
         if os.path.getsize(temp_name) > MAX_ARCHIVE_BYTES:
             raise PuzzleFormatError("Arşiv boyut sınırını aşıyor")
-        with open(temp_name, "rb") as written:
+        # Windows requires a writable descriptor for fsync/_commit.
+        with open(temp_name, "r+b") as written:
             os.fsync(written.fileno())
         if overwrite:
             os.replace(temp_name, path)

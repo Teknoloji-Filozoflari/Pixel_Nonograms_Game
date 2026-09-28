@@ -60,9 +60,13 @@ class Puzzle:
             raise ValueError("Geçersiz zorluk")
         if not isinstance(self.metadata, PuzzleMetadata):
             raise ValueError("Geçersiz metadata")
+        if self.reward_item_id is None:
+            object.__setattr__(self, "reward_item_id", HelperItemId.LOGIC_HINT)
         if self.reward_item_id is not None:
             try:
                 item_id = HelperItemId(self.reward_item_id)
+                if item_id is HelperItemId.COLUMN_SCANNER:
+                    item_id = HelperItemId.ROW_SCANNER
             except ValueError as exc:
                 raise ValueError("Bilinmeyen bulmaca ödülü") from exc
             object.__setattr__(self, "reward_item_id", item_id)

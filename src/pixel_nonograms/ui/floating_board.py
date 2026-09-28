@@ -3,21 +3,24 @@
 from PySide6.QtCore import QPoint, Qt, Signal
 from PySide6.QtWidgets import QLabel, QWidget
 
+from pixel_nonograms.i18n import tr
 from pixel_nonograms.rendering import BoardWidget
+
+from .theme import set_theme_style
 
 
 class BoardDragHandle(QLabel):
     dragged = Signal(QPoint)
 
     def __init__(self, parent: QWidget | None = None) -> None:
-        super().__init__("⠿  Tahtayı sürükle", parent)
-        self.setFixedHeight(24)
+        super().__init__("⠿", parent)
+        self.setFixedHeight(18)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setCursor(Qt.CursorShape.OpenHandCursor)
-        self.setToolTip("Bulmaca çerçevesini taşımak için sürükle")
-        self.setStyleSheet(
-            "background: #3B4650; color: #F0D6A6; border: 1px solid #A98855;"
-            "border-radius: 4px; font-size: 11px; font-weight: 700;"
+        self.setToolTip(tr("Bulmaca çerçevesini taşımak için sürükle"))
+        set_theme_style(
+            self,
+            "background: $button; color: $accent; border: 1px solid $border;border-radius: 4px; font-size: 11px; font-weight: 700;",
         )
         self._last_global: QPoint | None = None
 
@@ -55,6 +58,7 @@ class FloatingBoardStage(QWidget):
         self.shell: QWidget | None = None
         self.board: BoardWidget | None = None
         self._user_moved = False
+        self.expanded = False
 
     def attach(self, shell: QWidget, board: BoardWidget) -> None:
         shell.setParent(self)
@@ -64,6 +68,11 @@ class FloatingBoardStage(QWidget):
 
     def layout_board(self) -> None:
         if self.shell is None or self.board is None or self.width() < 1 or self.height() < 1:
+            return
+        if self.expanded:
+            self.shell.setFixedSize(self.size())
+            self.shell.move(0, 0)
+            self.board.fit_to_screen()
             return
         left, top = self.board._clue_bands()
         max_width = max(1, self.width() - 12)
@@ -81,12 +90,16 @@ class FloatingBoardStage(QWidget):
         if self._user_moved:
             self._place(old_position)
         else:
-            self._place(QPoint((self.width() - self.shell.width()) // 2,
-                               (self.height() - self.shell.height()) // 2))
+            self._place(
+                QPoint(
+                    (self.width() - self.shell.width()) // 2,
+                    (self.height() - self.shell.height()) // 2,
+                )
+            )
         self.board.fit_to_screen()
 
     def drag_by(self, delta: QPoint) -> None:
-        if self.shell is None:
+        if self.shell is None or self.expanded:
             return
         self._user_moved = True
         self._place(self.shell.pos() + delta)
@@ -96,10 +109,8 @@ class FloatingBoardStage(QWidget):
             return
         # A little overflow leaves room to move a frame that nearly fills the stage.
         overflow = 72 if self._user_moved else 0
-        x = min(max(-overflow, position.x()),
-                max(0, self.width() - self.shell.width()) + overflow)
-        y = min(max(0, position.y()),
-                max(0, self.height() - self.shell.height()) + overflow)
+        x = min(max(-overflow, position.x()), max(0, self.width() - self.shell.width()) + overflow)
+        y = min(max(0, position.y()), max(0, self.height() - self.shell.height()) + overflow)
         self.shell.move(x, y)
 
     def resizeEvent(self, event) -> None:

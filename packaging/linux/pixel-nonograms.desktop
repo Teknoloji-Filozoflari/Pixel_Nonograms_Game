@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Pixel Nonograms
+Name[tr]=Piksel Nonogram
+Comment=Offline picture logic puzzles
+Comment[tr]=Çevrimdışı resimli mantık bulmacaları
+Exec=pixel-nonograms
+Icon=pixel-nonograms
+Terminal=false
+Categories=Game;LogicGame;
+StartupNotify=true

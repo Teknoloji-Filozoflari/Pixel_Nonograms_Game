@@ -29,7 +29,7 @@ def test_database_initial_migration_and_reopen(tmp_path):
     path = tmp_path / "nested" / "progress.sqlite3"
     database = Database(path)
     assert path.is_file()
-    assert database.connection.execute("PRAGMA user_version").fetchone()[0] == 4
+    assert database.connection.execute("PRAGMA user_version").fetchone()[0] == 8
     columns = {
         row[1] for row in database.connection.execute("PRAGMA table_info(progress)").fetchall()
     }
@@ -52,7 +52,7 @@ def test_database_initial_migration_and_reopen(tmp_path):
     )
     database.close()
     reopened = Database(path)
-    assert reopened.connection.execute("PRAGMA user_version").fetchone()[0] == 4
+    assert reopened.connection.execute("PRAGMA user_version").fetchone()[0] == 8
     reopened.close()
 
 
@@ -71,7 +71,7 @@ def test_v1_database_upgrades_with_backup_and_favorites_persist(tmp_path):
     connection.commit()
     connection.close()
     database = Database(path)
-    assert database.connection.execute("PRAGMA user_version").fetchone()[0] == 4
+    assert database.connection.execute("PRAGMA user_version").fetchone()[0] == 8
     assert database.load_progress("legacy").elapsed_ms == 25
     backups = list(tmp_path.glob("v1.sqlite3.v1.*.bak"))
     assert len(backups) == 1
@@ -100,7 +100,7 @@ def test_v2_database_upgrades_inventory_without_losing_favorites(tmp_path):
     connection.commit()
     connection.close()
     database = Database(path)
-    assert database.connection.execute("PRAGMA user_version").fetchone()[0] == 4
+    assert database.connection.execute("PRAGMA user_version").fetchone()[0] == 8
     assert database.favorite_ids() == frozenset({"saved"})
     assert database.connection.execute("SELECT count(*) FROM inventory").fetchone()[0] == 0
     assert len(list(tmp_path.glob("v2.sqlite3.v2.*.bak"))) == 1
@@ -164,7 +164,6 @@ def test_roundtrip_two_puzzles_and_statistics(tmp_path):
     assert manager.save(another)
     assert manager.load(puzzle_for(((0,),), puzzle_id="missing")) is None
     database.close()
-
 
     database = Database(path)
     manager = SaveManager(database)
@@ -243,13 +242,14 @@ def test_corrupt_grid_or_changed_puzzle_is_rejected_without_overwrite(tmp_path):
     with pytest.raises(ValueError, match="eşleşmiyor"):
         manager.load(puzzle_for(((0, 1),)))
     database.connection.execute(
-        "UPDATE progress SET grid_state = ? WHERE puzzle_id = ?", (bytes((9, 0, 0, 0)), puzzle.id)
+        "UPDATE progress SET grid_state = ? WHERE puzzle_id = ?",
+        (bytes((9, 0, 0, 0, 0, 0, 0, 0)), puzzle.id),
     )
     database.connection.commit()
     with pytest.raises(ValueError, match="geçersiz hücre"):
         manager.load(puzzle)
     row = database.load_progress(puzzle.id)
-    assert row.grid_state == bytes((9, 0, 0, 0))
+    assert row.grid_state == bytes((9, 0, 0, 0, 0, 0, 0, 0))
     database.close()
 
 
@@ -273,3 +273,53 @@ def test_invalid_session_snapshot_does_not_restore(tmp_path):
     with pytest.raises(ValueError, match="tarih"):
         manager.load(puzzle)
     database.close()
+
+
+def test_notes_and_x_sources_roundtrip_and_legacy_v4_upgrade(tmp_path):
+    from pixel_nonograms.persistence.save_manager import _fingerprint
+
+    path = tmp_path / "v4.sqlite3"
+    puzzle = puzzle_for(((1, 0), (0, 1)))
+    connection = sqlite3.connect(path)
+    for version in range(1, 5):
+        migrations.MIGRATIONS[version](connection)
+    connection.execute("PRAGMA user_version = 4")
+    connection.execute(
+        """INSERT INTO progress VALUES (
+        ?, 1, ?, 1, 2, 2, ?, 100, 1, 0, 0,
+        '2026-01-01T00:00:00+00:00', 0, '2026-01-01T00:00:00+00:00',
+        '2026-01-01T00:00:00+00:00', '[["row",0,0]]')""",
+        (puzzle.id, _fingerprint(puzzle), bytes((0, 0, 2, 0, 0, 0, 0, 0))),
+    )
+    connection.commit()
+    connection.close()
+    db = Database(path)
+    assert len(list(tmp_path.glob("v4.sqlite3.v4.*.bak"))) == 1
+    manager = SaveManager(db)
+    legacy = manager.load(puzzle)
+    assert legacy.cell_at(1, 0).auto_sources == 0
+    legacy.toggle_clue("row", 0, 0)
+    assert legacy.cell_at(1, 0).state is CellState.EMPTY
+    legacy.mark_note(0, 0)
+    legacy.toggle_clue("row", 1, 0)
+    manager.save(legacy)
+    assert db.load_progress(puzzle.id).state_version == 3
+    restored = manager.load(puzzle)
+    assert restored.cells == legacy.cells
+    restored.toggle_clue("row", 1, 0)
+    assert restored.cell_at(0, 1).state is CellState.UNKNOWN
+    assert restored.cell_at(0, 0).note
+    db.close()
+
+
+@pytest.mark.parametrize("cell", [(0, 0, 2, 0), (0, 0, 0, 8), (1, 1, 1, 0), (1, 1, 0, 1)])
+def test_invalid_v2_cell_metadata_is_rejected(tmp_path, cell):
+    db = Database(tmp_path / "bad-meta.sqlite3")
+    manager = SaveManager(db)
+    puzzle = puzzle_for(((1, 0),))
+    manager.save(GameSession(puzzle))
+    db.connection.execute("UPDATE progress SET grid_state = ?, state_version = 2", (bytes(cell + (0, 0, 0, 0)),))
+    db.connection.commit()
+    with pytest.raises(ValueError, match="geçersiz hücre"):
+        manager.load(puzzle)
+    db.close()

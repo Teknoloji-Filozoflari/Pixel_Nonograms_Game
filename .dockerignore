@@ -1,0 +1,14 @@
+.venv
+.git
+.reference
+.pytest_cache
+.ruff_cache
+__pycache__
+**/__pycache__
+*.egg-info
+**/*.egg-info
+build
+dist
+artifacts
+SOURCE_MANIFEST.json
+*.sqlite*

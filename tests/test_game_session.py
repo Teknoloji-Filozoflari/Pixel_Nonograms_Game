@@ -270,7 +270,10 @@ def test_manual_clues_cross_remaining_cells_only_after_last_number_and_undo():
     session.mark_empty(3, 0)
     assert session.toggle_clue("row", 0, 1)
     assert [session.cell_at(x, 0).state for x in range(4)] == [
-        CellState.FILLED, CellState.EMPTY, CellState.EMPTY, CellState.EMPTY,
+        CellState.FILLED,
+        CellState.EMPTY,
+        CellState.EMPTY,
+        CellState.EMPTY,
     ]
     assert session.undo()
     assert not session.is_clue_crossed("row", 0, 1)
@@ -279,7 +282,8 @@ def test_manual_clues_cross_remaining_cells_only_after_last_number_and_undo():
     assert session.is_clue_crossed("row", 0, 1)
     assert session.cell_at(1, 0).state is CellState.EMPTY
     assert not session.toggle_clue("row", 0, 1)
-    assert all(session.cell_at(x, 0).state is CellState.UNKNOWN for x in (1, 2, 3))
+    assert all(session.cell_at(x, 0).state is CellState.UNKNOWN for x in (1, 2))
+    assert session.cell_at(3, 0).state is CellState.EMPTY
     assert session.undo()
     assert session.is_clue_crossed("row", 0, 1)
     assert all(session.cell_at(x, 0).state is CellState.EMPTY for x in (1, 2, 3))
@@ -475,3 +479,73 @@ def test_assumption_rejects_nested_and_invalid_transitions():
     session.fill_cell(1, 0)
     with pytest.raises(RuntimeError, match="Tamamlanmış"):
         session.begin_assumption()
+
+
+def test_manual_x_and_intersecting_sources_survive_clue_reopening():
+    session = GameSession(puzzle_for(((1, 0, 0), (0, 1, 0), (0, 0, 1))))
+    session.mark_empty(2, 0)
+    session.toggle_clue("row", 0, 0)
+    session.toggle_clue("column", 1, 0)
+    assert session.cell_at(1, 0).auto_sources == 3
+    session.toggle_clue("row", 0, 0)
+    assert session.cell_at(1, 0).auto_sources == 2
+    assert session.cell_at(2, 0) == CellMark(CellState.EMPTY)
+    session.toggle_clue("column", 1, 0)
+    assert session.cell_at(1, 0).state is CellState.UNKNOWN
+    session.undo()
+    assert session.cell_at(1, 0).auto_sources == 2
+    session.undo()
+    assert session.cell_at(1, 0).auto_sources == 3
+    session.redo()
+    assert session.cell_at(1, 0).auto_sources == 2
+
+
+def test_manual_adoption_of_auto_x_and_disabled_clue_x():
+    session = GameSession(puzzle_for(((1, 0), (0, 1))))
+    session.toggle_clue("row", 0, 0)
+    session.mark_empty(1, 0)
+    session.toggle_clue("row", 0, 0)
+    assert session.cell_at(1, 0) == CellMark(CellState.EMPTY)
+    session.auto_x_crossed_lines = False
+    session.toggle_clue("row", 1, 0)
+    assert session.cell_at(0, 1) == CellMark()
+
+
+def test_notes_do_not_affect_logic_and_trial_notes_are_temporary():
+    from pixel_nonograms.core import analyze_board
+
+    session = GameSession(puzzle_for(((1, 0), (0, 1))))
+    before = analyze_board(session.puzzle, session.cells)
+    session.mark_note(0, 0)
+    assert session.cell_at(0, 0).state is CellState.UNKNOWN
+    assert analyze_board(session.puzzle, session.cells) == before
+    assert not session.completed and session.mistake_count == 0
+    session.begin_assumption()
+    session.mark_note(1, 0)
+    assert not session.snapshot().cells[0][1].note
+    session.cancel_assumption()
+    assert session.cell_at(0, 0).note and not session.cell_at(1, 0).note
+    session.begin_assumption()
+    session.fill_cell(0, 0)
+    session.accept_assumption()
+    assert not session.cell_at(0, 0).note
+    session.undo()
+    assert session.cell_at(0, 0).note
+    session.redo()
+    assert session.cell_at(0, 0).state is CellState.FILLED
+    assert not session.mark_note(0, 0)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"note": 1},
+        {"state": CellState.EMPTY, "note": True},
+        {"auto_sources": 8},
+        {"auto_sources": True},
+        {"auto_sources": 1},
+    ],
+)
+def test_invalid_note_and_source_metadata_rejected(kwargs):
+    with pytest.raises(ValueError):
+        CellMark(**kwargs)

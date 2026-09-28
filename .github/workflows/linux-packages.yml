@@ -1,0 +1,79 @@
+name: Linux packages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Debian 12 environment
+        run: docker build -f packaging/linux/Dockerfile -t pixel-nonograms-build .
+      - name: Tests
+        run: >-
+          docker run --rm -e QT_QPA_PLATFORM=offscreen pixel-nonograms-build
+          python -m pytest -q
+      - name: AppImage, deb and single release archive
+        run: |
+          mkdir -p dist/linux
+          docker run --rm -e OUTPUT_DIR=/out -v "$PWD/dist/linux:/out" pixel-nonograms-build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pixel-Nonograms-Linux-amd64
+          path: dist/linux/
+          if-no-files-found: error
+          retention-days: 30
+
+  install-test:
+    needs: build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        debian: [bookworm, trixie]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Pixel-Nonograms-Linux-amd64
+          path: packages
+      - name: Install and launch on Debian
+        run: |
+          docker run --rm -v "$PWD/packages:/packages:ro" debian:${{ matrix.debian }}-slim sh -ec '
+            apt-get update
+            apt-get install -y /packages/pixel-nonograms_*_amd64.deb xvfb xauth
+            xvfb-run -a pixel-nonograms --smoke-test
+          '
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build, install-test]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Pixel-Nonograms-Linux-amd64
+          path: packages
+      - name: Verify package checksums
+        working-directory: packages
+        run: sha256sum -c SHA256SUMS.txt
+      - name: Publish Linux packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            packages/*.AppImage packages/*.deb packages/SHA256SUMS.txt \
+            packages/*.tar.gz packages/README_LINUX.md \
+            --title "Piksel Nonogram ${GITHUB_REF_NAME}" \
+            --generate-notes

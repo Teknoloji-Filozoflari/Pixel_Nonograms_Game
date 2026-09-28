@@ -8,5 +8,5 @@ class HelperItemId(StrEnum):
     LOGIC_HINT = "logic_hint"
     ERROR_CHECK = "error_check"
     ROW_SCANNER = "row_scanner"
-    COLUMN_SCANNER = "column_scanner"
+    COLUMN_SCANNER = "column_scanner"  # Retired; kept to read older save files.
     SECOND_LOOK = "second_look"

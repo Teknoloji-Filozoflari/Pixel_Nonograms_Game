@@ -33,7 +33,7 @@ def puzzle_for(puzzle_id, title, solution, difficulty, *, tags=(), palette=("#12
 
 def test_built_in_categories_and_unique_clue_solutions():
     puzzles = built_in_puzzles()
-    assert len(puzzles) == 12
+    assert len(puzzles) == 1000
     assert len({p.id for p in puzzles}) == len(puzzles)
     assert {p.difficulty for p in puzzles} == set(Difficulty)
     allowed = {
@@ -42,12 +42,14 @@ def test_built_in_categories_and_unique_clue_solutions():
         Difficulty.HARD: set(range(25, 31)),
         Difficulty.EXPERT: set(range(30, 51)),
     }
-    for difficulty in Difficulty:
+    for difficulty, mono, color in zip(Difficulty, (275, 225, 175, 125), (100, 50, 25, 25)):
         group = [p for p in puzzles if p.difficulty is difficulty]
-        assert len(group) == 3
+        assert sum(not p.is_colored for p in group) == mono
+        assert sum(p.is_colored for p in group) == color
         assert all(p.width == p.height and p.width in allowed[difficulty] for p in group)
     assert any("başlangıç" in p.tags for p in puzzles)
-    assert any(p.is_colored for p in puzzles)
+    assert sum(p.is_colored for p in puzzles) == 200
+    assert len({p.solution for p in puzzles}) == len(puzzles)
     cappadocia = next(p for p in puzzles if p.title == "Kapadokya")
     assert (cappadocia.width, cappadocia.height, cappadocia.difficulty) == (
         20,
@@ -58,6 +60,23 @@ def test_built_in_categories_and_unique_clue_solutions():
         result = validate_unique_solution(puzzle, timeout_seconds=3)
         assert result.status is SolveStatus.SOLVED, puzzle.title
         assert result.solution == puzzle.solution
+
+
+def test_visible_categories_and_compacted_puzzles_remain_unique(tmp_path):
+    database = Database(tmp_path / "counts.sqlite")
+    library = PuzzleLibrary(built_in_puzzles(), SaveManager(database), database)
+    limits = {Difficulty.EASY: {5, 10}, Difficulty.MEDIUM: set(range(15, 21)),
+              Difficulty.HARD: set(range(25, 31)), Difficulty.EXPERT: set(range(30, 51))}
+    assert len(library.puzzles) == 1000
+    assert all(p.width == p.height and p.width in limits[p.difficulty] for p in library.puzzles)
+    for category, count in zip(("Kolay", "Orta", "Zor", "Uzman", "Renkli"), (375, 275, 200, 150, 200)):
+        assert len(library.query(PuzzleQuery(category=category))) == count
+    for puzzle in library.puzzles:
+        if puzzle.id.startswith(("collection-", "extended-")):
+            result = validate_unique_solution(puzzle, timeout_seconds=3)
+            assert result.status is SolveStatus.SOLVED, puzzle.id
+            assert result.solution == puzzle.solution
+    database.close()
 
 
 def test_query_progress_status_color_size_favorites_and_sorts(tmp_path):
@@ -91,9 +110,9 @@ def test_query_progress_status_color_size_favorites_and_sorts(tmp_path):
     assert ids(PuzzleQuery(category="Başlangıç")) == ["a"]
     assert ids(PuzzleQuery(category="Renkli")) == ["c"]
     assert ids(PuzzleQuery(category="Orta")) == ["b"]
-    assert ids(PuzzleQuery(size=(2, 1))) == ["a"]
+    assert ids(PuzzleQuery(size=(2, 1))) == ["a", "c"]
     assert ids(PuzzleQuery(difficulty=Difficulty.HARD)) == ["c"]
-    assert ids(PuzzleQuery(color_mode="mono")) == ["a", "b"]
+    assert ids(PuzzleQuery(color_mode="mono")) == ["b", "a"]
     assert ids(PuzzleQuery(status=PuzzleStatus.IN_PROGRESS)) == ["a"]
     assert ids(PuzzleQuery(status=PuzzleStatus.COMPLETED)) == ["b"]
     assert ids(PuzzleQuery(status=PuzzleStatus.UNSTARTED)) == ["c"]
@@ -120,3 +139,14 @@ def test_corrupt_progress_remains_visible_as_error_card(tmp_path):
     assert entry.error
     assert database.load_progress("one").grid_state == bytes((0x99,))
     database.close()
+
+
+def test_easy_color_puzzles_are_logically_solvable():
+    from pixel_nonograms.services.puzzle_quality import assess_quality
+
+    puzzles = [p for p in built_in_puzzles() if p.id in
+               ('renkli-cicek-05-01', 'renkli-ev-07-01')]
+    assert len(puzzles) == 2
+    for puzzle in puzzles:
+        assert puzzle.is_colored
+        assert assess_quality(puzzle).status == 'solved'

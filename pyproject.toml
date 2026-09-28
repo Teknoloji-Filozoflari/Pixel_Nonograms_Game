@@ -18,6 +18,9 @@ dev = ["pytest>=8", "ruff>=0.11"]
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+pixel_nonograms = ["translations.json", "catalog_expansion.json", "catalog_extended.json"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]

@@ -3,5 +3,10 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .venv/
+.venv-linux/
+artifacts/
+*.egg-info/
 dist/
 build/
+.reference/
+SOURCE_MANIFEST.json

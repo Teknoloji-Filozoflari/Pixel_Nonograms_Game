@@ -1,30 +1,20 @@
-"""Application services independent of Qt widgets."""
+"""Load application services on demand to keep startup lightweight."""
+from importlib import import_module
 
-from .editor import EditorSaveResult, load_user_puzzles, save_editor_puzzle
-from .image_import import ImageImportResult, convert_image_to_puzzle
-from .inventory import ITEM_NAMES, AidResult, InventoryService
-from .puzzle_library import (
-    PuzzleEntry,
-    PuzzleLibrary,
-    PuzzleQuery,
-    PuzzleSort,
-    PuzzleStatus,
-    built_in_puzzles,
-)
+_EXPORTS = {
+    "editor": ("EditorSaveResult", "load_user_puzzles", "save_editor_puzzle"),
+    "image_import": ("ImageImportResult", "convert_image_to_puzzle"),
+    "inventory": ("ITEM_NAMES", "AidResult", "InventoryService"),
+    "puzzle_library": ("PuzzleEntry", "PuzzleLibrary", "PuzzleQuery", "PuzzleSort",
+                       "PuzzleStatus", "built_in_puzzles"),
+}
+__all__ = [name for names in _EXPORTS.values() for name in names]
 
-__all__ = [
-    "PuzzleEntry",
-    "AidResult",
-    "EditorSaveResult",
-    "ImageImportResult",
-    "InventoryService",
-    "load_user_puzzles",
-    "save_editor_puzzle",
-    "ITEM_NAMES",
-    "PuzzleLibrary",
-    "PuzzleQuery",
-    "PuzzleSort",
-    "PuzzleStatus",
-    "built_in_puzzles",
-    "convert_image_to_puzzle",
-]
+
+def __getattr__(name):
+    for module, names in _EXPORTS.items():
+        if name in names:
+            value = getattr(import_module(f"{__name__}.{module}"), name)
+            globals()[name] = value
+            return value
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

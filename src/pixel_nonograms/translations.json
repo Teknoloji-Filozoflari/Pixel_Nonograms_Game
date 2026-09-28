@@ -1,0 +1,2156 @@
+{
+  "Dil": [
+    "Dil",
+    "Idioma",
+    "Язык",
+    "Language"
+  ],
+  "Piksel Nonogram": [
+    "Piksel Nonoqram",
+    "Pixel Nonogram",
+    "Пиксель Нонограмма",
+    "Pixel Nonogram"
+  ],
+  "PİKSEL NONOGRAM": [
+    "PİKSEL NONOQRAM",
+    "PIXEL NONOGRAM",
+    "ПИКСЕЛЬ НОНОГРАММА",
+    "PIXEL NONOGRAM"
+  ],
+  "Sayıları takip et. Pikselleri tamamla.": [
+    "Rəqəmləri izlə. Pikselləri tamamla.",
+    "Sigue los números. Completa los píxeles.",
+    "Следуй числам. Заполняй пиксели.",
+    "Follow the numbers. Complete the pixels."
+  ],
+  "Ayarlar": [
+    "Ayarlar",
+    "Ajustes",
+    "Настройки",
+    "Settings"
+  ],
+  "Çıkış": [
+    "Çıxış",
+    "Salir",
+    "Выход",
+    "Exit"
+  ],
+  "Kapat": [
+    "Bağla",
+    "Cerrar",
+    "Закрыть",
+    "Close"
+  ],
+  "Tamam": [
+    "Tamam",
+    "Aceptar",
+    "ОК",
+    "OK"
+  ],
+  "İptal": [
+    "Ləğv et",
+    "Cancelar",
+    "Отмена",
+    "Cancel"
+  ],
+  "Evet": [
+    "Bəli",
+    "Sí",
+    "Да",
+    "Yes"
+  ],
+  "Hayır": [
+    "Xeyr",
+    "No",
+    "Нет",
+    "No"
+  ],
+  "Bulmaca oluştur": [
+    "Tapmaca yarat",
+    "Crear puzle",
+    "Создать головоломку",
+    "Create puzzle"
+  ],
+  "Oynamayı öğren": [
+    "Oynamağı öyrən",
+    "Aprender a jugar",
+    "Обучение",
+    "Learn to play"
+  ],
+  "Oynamayı öğren · Ücretsiz alıştırmalar": [
+    "Oynamağı öyrən · Pulsuz məşqlər",
+    "Aprender a jugar · Prácticas gratis",
+    "Обучение · Бесплатные упражнения",
+    "Learn to play · Free practice"
+  ],
+  "Tümü": [
+    "Hamısı",
+    "Todos",
+    "Все",
+    "All"
+  ],
+  "Kolay": [
+    "Asan",
+    "Fácil",
+    "Легко",
+    "Easy"
+  ],
+  "Orta": [
+    "Orta",
+    "Medio",
+    "Средне",
+    "Medium"
+  ],
+  "Zor": [
+    "Çətin",
+    "Difícil",
+    "Сложно",
+    "Hard"
+  ],
+  "Uzman": [
+    "Ekspert",
+    "Experto",
+    "Эксперт",
+    "Expert"
+  ],
+  "Renkli": [
+    "Rəngli",
+    "Color",
+    "Цветные",
+    "Color"
+  ],
+  "{0} bulmaca": [
+    "{0} tapmaca",
+    "{0} puzles",
+    "Головоломок: {0}",
+    "{0} puzzles"
+  ],
+  "Favorilerden çıkar": [
+    "Sevimlilərdən çıxar",
+    "Quitar de favoritos",
+    "Убрать из избранного",
+    "Remove favorite"
+  ],
+  "Favorilere ekle": [
+    "Sevimlilərə əlavə et",
+    "Añadir a favoritos",
+    "В избранное",
+    "Add favorite"
+  ],
+  "Bulmacayı aç": [
+    "Tapmacanı aç",
+    "Abrir puzle",
+    "Открыть головоломку",
+    "Open puzzle"
+  ],
+  "Yeniden aç": [
+    "Yenidən aç",
+    "Volver a abrir",
+    "Открыть снова",
+    "Reopen"
+  ],
+  "Tamamlandı": [
+    "Tamamlandı",
+    "Completado",
+    "Завершено",
+    "Completed"
+  ],
+  "Başlanmamış": [
+    "Başlanmayıb",
+    "Sin empezar",
+    "Не начато",
+    "Not started"
+  ],
+  "Devam ediyor": [
+    "Davam edir",
+    "En curso",
+    "В процессе",
+    "In progress"
+  ],
+  "Ödül alındı: {0}": [
+    "Mükafat alındı: {0}",
+    "Premio recibido: {0}",
+    "Награда получена: {0}",
+    "Reward claimed: {0}"
+  ],
+  "İlk tamamlama ödülü: {0}": [
+    "İlk tamamlama mükafatı: {0}",
+    "Premio por completar: {0}",
+    "Награда за первое решение: {0}",
+    "First completion reward: {0}"
+  ],
+  "Görevler ve ödüller": [
+    "Tapşırıqlar və mükafatlar",
+    "Misiones y premios",
+    "Задания и награды",
+    "Missions and rewards"
+  ],
+  "Görevler ve rozetler": [
+    "Tapşırıqlar və nişanlar",
+    "Misiones e insignias",
+    "Задания и значки",
+    "Missions and badges"
+  ],
+  "Rozet seçilmedi": [
+    "Nişan seçilməyib",
+    "Sin insignia",
+    "Значок не выбран",
+    "No badge selected"
+  ],
+  "★ {0} yıldız": [
+    "★ {0} ulduz",
+    "★ {0} estrellas",
+    "★ Звёзд: {0}",
+    "★ {0} stars"
+  ],
+  "Kütüphane yüklenemedi: {0}": [
+    "Kitabxana yüklənmədi: {0}",
+    "No se pudo cargar la biblioteca: {0}",
+    "Не удалось загрузить библиотеку: {0}",
+    "Could not load library: {0}"
+  ],
+  "Kütüphane yüklenemedi.": [
+    "Kitabxana yüklənmədi.",
+    "No se pudo cargar la biblioteca.",
+    "Не удалось загрузить библиотеку.",
+    "Could not load library."
+  ],
+  "Bu filtrelere uygun bulmaca yok.": [
+    "Bu filtrlərə uyğun tapmaca yoxdur.",
+    "No hay puzles con estos filtros.",
+    "Нет подходящих головоломок.",
+    "No puzzles match these filters."
+  ],
+  "Kayıt hatası: {0}": [
+    "Saxlama xətası: {0}",
+    "Error de guardado: {0}",
+    "Ошибка сохранения: {0}",
+    "Save error: {0}"
+  ],
+  "Favori kaydedilemedi: {0}": [
+    "Sevimli saxlanmadı: {0}",
+    "No se pudo guardar el favorito: {0}",
+    "Не удалось сохранить избранное: {0}",
+    "Could not save favorite: {0}"
+  ],
+  "Kütüphaneye dön": [
+    "Kitabxanaya qayıt",
+    "Volver a la biblioteca",
+    "В библиотеку",
+    "Back to library"
+  ],
+  "← Kütüphane": [
+    "← Kitabxana",
+    "← Biblioteca",
+    "← Библиотека",
+    "← Library"
+  ],
+  "Hareketi azalt": [
+    "Animasiyaları azalt",
+    "Reducir animaciones",
+    "Уменьшить анимацию",
+    "Reduce motion"
+  ],
+  "Uygulamalı öğretici": [
+    "Praktik təlim",
+    "Tutorial práctico",
+    "Практическое обучение",
+    "Interactive tutorial"
+  ],
+  "Nasıl oynanır?": [
+    "Necə oynanılır?",
+    "¿Cómo se juega?",
+    "Как играть?",
+    "How to play"
+  ],
+  "Oyun kontrolleri": [
+    "Oyun idarəetməsi",
+    "Controles del juego",
+    "Управление",
+    "Game controls"
+  ],
+  "Yardım tercihleri": [
+    "Kömək seçimləri",
+    "Opciones de ayuda",
+    "Параметры помощи",
+    "Assistance options"
+  ],
+  "Tamamlanan çizgilerin boşlarını otomatik X yap": [
+    "Tamamlanan xətlərdə boş xanaları X ilə işarələ",
+    "Marcar vacíos de líneas completas con X",
+    "Ставить X в пустых клетках завершённых линий",
+    "Auto-cross empty cells in completed lines"
+  ],
+  "Son sayıyı çizince kalan hücreleri X yap": [
+    "Son rəqəm silindikdə qalan xanalara X qoy",
+    "Marcar con X al tachar la última pista",
+    "Ставить X после последней зачёркнутой подсказки",
+    "Cross remaining cells after the last clue"
+  ],
+  "Kesin tamamlanan sayıları otomatik çiz": [
+    "Tamamlanan rəqəmləri avtomatik sil",
+    "Tachar pistas completadas automáticamente",
+    "Автоматически зачёркивать решённые подсказки",
+    "Auto-cross completed clues"
+  ],
+  "Çizgide fazla dolu hücre uyarısı göster": [
+    "Xətdə artıq dolu xana xəbərdarlığı göstər",
+    "Avisar de celdas sobrantes en una línea",
+    "Предупреждать о лишних закрашенных клетках",
+    "Warn about excess filled cells in a line"
+  ],
+  "Sürüklemede yön kilidi": [
+    "Sürükləyərkən istiqaməti kilidlə",
+    "Bloquear dirección al arrastrar",
+    "Фиксировать направление при перетаскивании",
+    "Lock direction while dragging"
+  ],
+  "Tercihler otomatik kaydedilir.": [
+    "Seçimlər avtomatik saxlanılır.",
+    "Los ajustes se guardan automáticamente.",
+    "Настройки сохраняются автоматически.",
+    "Preferences are saved automatically."
+  ],
+  "Doldur": [
+    "Doldur",
+    "Rellenar",
+    "Закрасить",
+    "Fill"
+  ],
+  "X koy": [
+    "X qoy",
+    "Marcar X",
+    "Поставить X",
+    "Mark X"
+  ],
+  "Sil": [
+    "Sil",
+    "Borrar",
+    "Стереть",
+    "Erase"
+  ],
+  "Geri al": [
+    "Geri al",
+    "Deshacer",
+    "Отменить",
+    "Undo"
+  ],
+  "Yinele": [
+    "Təkrarla",
+    "Rehacer",
+    "Повторить",
+    "Redo"
+  ],
+  "Taşı": [
+    "Daşı",
+    "Mover",
+    "Переместить",
+    "Pan"
+  ],
+  "Kalem": [
+    "Qələm",
+    "Lápiz",
+    "Карандаш",
+    "Pencil"
+  ],
+  "Yakınlaştır": [
+    "Yaxınlaşdır",
+    "Acercar",
+    "Приблизить",
+    "Zoom in"
+  ],
+  "Uzaklaştır": [
+    "Uzaqlaşdır",
+    "Alejar",
+    "Отдалить",
+    "Zoom out"
+  ],
+  "Ekrana sığdır": [
+    "Ekrana sığdır",
+    "Ajustar a pantalla",
+    "Вписать в экран",
+    "Fit to screen"
+  ],
+  "Deneme başlat": [
+    "Sınağa başla",
+    "Iniciar prueba",
+    "Начать пробу",
+    "Start trial"
+  ],
+  "Denemeyi kabul et": [
+    "Sınağı qəbul et",
+    "Aceptar prueba",
+    "Принять пробу",
+    "Accept trial"
+  ],
+  "Denemeyi iptal et": [
+    "Sınağı ləğv et",
+    "Cancelar prueba",
+    "Отменить пробу",
+    "Cancel trial"
+  ],
+  "Bulmaca tamamlandı": [
+    "Tapmaca tamamlandı",
+    "Puzle completado",
+    "Головоломка решена",
+    "Puzzle completed"
+  ],
+  "Sonraki bulmaca": [
+    "Növbəti tapmaca",
+    "Siguiente puzle",
+    "Следующая головоломка",
+    "Next puzzle"
+  ],
+  "Bulmaca açılamadı": [
+    "Tapmaca açılmadı",
+    "No se pudo abrir el puzle",
+    "Не удалось открыть головоломку",
+    "Could not open puzzle"
+  ],
+  "Sonraki bulmaca açılamadı": [
+    "Növbəti tapmaca açılmadı",
+    "No se pudo abrir el siguiente puzle",
+    "Не удалось открыть следующую головоломку",
+    "Could not open next puzzle"
+  ],
+  "Bulmaca eklenemedi": [
+    "Tapmaca əlavə edilmədi",
+    "No se pudo añadir el puzle",
+    "Не удалось добавить головоломку",
+    "Could not add puzzle"
+  ],
+  "Tamamlanan resim": [
+    "Tamamlanmış şəkil",
+    "Imagen completada",
+    "Готовая картинка",
+    "Completed picture"
+  ],
+  "Gizli resim": [
+    "Gizli şəkil",
+    "Imagen oculta",
+    "Скрытая картинка",
+    "Hidden picture"
+  ],
+  "Kaydedilmiş hamleler": [
+    "Saxlanmış gedişlər",
+    "Movimientos guardados",
+    "Сохранённые ходы",
+    "Saved moves"
+  ],
+  "Büyük Çiçek": [
+    "Böyük Çiçək",
+    "Flor grande",
+    "Большой цветок",
+    "Large Flower"
+  ],
+  "Deniz Feneri": [
+    "Mayak",
+    "Faro",
+    "Маяк",
+    "Lighthouse"
+  ],
+  "Elmas": [
+    "Almaz",
+    "Diamante",
+    "Алмаз",
+    "Diamond"
+  ],
+  "İlk Adım": [
+    "İlk Addım",
+    "Primer paso",
+    "Первый шаг",
+    "First Step"
+  ],
+  "Kale": [
+    "Qala",
+    "Castillo",
+    "Замок",
+    "Castle"
+  ],
+  "Kalp": [
+    "Ürək",
+    "Corazón",
+    "Сердце",
+    "Heart"
+  ],
+  "Kapadokya": [
+    "Kapadokiya",
+    "Capadocia",
+    "Каппадокия",
+    "Cappadocia"
+  ],
+  "Lale": [
+    "Lalə",
+    "Tulipán",
+    "Тюльпан",
+    "Tulip"
+  ],
+  "Minik Çiçek": [
+    "Kiçik Çiçək",
+    "Florecita",
+    "Маленький цветок",
+    "Tiny Flower"
+  ],
+  "Mozaik": [
+    "Mozaika",
+    "Mosaico",
+    "Мозаика",
+    "Mosaic"
+  ],
+  "Bulmaca Editörü": [
+    "Tapmaca Redaktoru",
+    "Editor de puzles",
+    "Редактор головоломок",
+    "Puzzle Editor"
+  ],
+  "Görselden Nonogram": [
+    "Şəkildən Nonoqram",
+    "Nonograma desde imagen",
+    "Нонограмма из изображения",
+    "Nonogram from Image"
+  ],
+  "Görselden Oluştur": [
+    "Şəkildən yarat",
+    "Crear desde imagen",
+    "Создать из изображения",
+    "Create from Image"
+  ],
+  "Kalite Analizi": [
+    "Keyfiyyət təhlili",
+    "Analizar calidad",
+    "Анализ качества",
+    "Quality Analysis"
+  ],
+  "Doğrula ve Kaydet": [
+    "Yoxla və saxla",
+    "Validar y guardar",
+    "Проверить и сохранить",
+    "Validate and Save"
+  ],
+  "Başlık": [
+    "Başlıq",
+    "Título",
+    "Название",
+    "Title"
+  ],
+  "Yazar": [
+    "Müəllif",
+    "Autor",
+    "Автор",
+    "Author"
+  ],
+  "Zorluk": [
+    "Çətinlik",
+    "Dificultad",
+    "Сложность",
+    "Difficulty"
+  ],
+  "Açıklama": [
+    "Təsvir",
+    "Descripción",
+    "Описание",
+    "Description"
+  ],
+  "Etiketler": [
+    "Etiketlər",
+    "Etiquetas",
+    "Теги",
+    "Tags"
+  ],
+  "Etiketler, virgülle ayrılmış": [
+    "Vergüllə ayrılmış etiketlər",
+    "Etiquetas separadas por comas",
+    "Теги через запятую",
+    "Comma-separated tags"
+  ],
+  "Palet": [
+    "Palitra",
+    "Paleta",
+    "Палитра",
+    "Palette"
+  ],
+  "Izgara": [
+    "Tor",
+    "Cuadrícula",
+    "Сетка",
+    "Grid"
+  ],
+  "Izgarayı Temizle": [
+    "Toru təmizlə",
+    "Limpiar cuadrícula",
+    "Очистить сетку",
+    "Clear Grid"
+  ],
+  "Önizleme": [
+    "Önbaxış",
+    "Vista previa",
+    "Предпросмотр",
+    "Preview"
+  ],
+  "Önizle": [
+    "Önbaxış",
+    "Vista previa",
+    "Предпросмотр",
+    "Preview"
+  ],
+  "+ Renk": [
+    "+ Rəng",
+    "+ Color",
+    "+ Цвет",
+    "+ Color"
+  ],
+  "− Renk": [
+    "− Rəng",
+    "− Color",
+    "− Цвет",
+    "− Color"
+  ],
+  "Rengi Düzenle": [
+    "Rəngi düzəlt",
+    "Editar color",
+    "Изменить цвет",
+    "Edit Color"
+  ],
+  "Yeni Renk": [
+    "Yeni rəng",
+    "Nuevo color",
+    "Новый цвет",
+    "New Color"
+  ],
+  "Hücreye gelince satır ve sütun ipuçları görünür.": [
+    "Xanaya gələndə sətir və sütun ipucları görünür.",
+    "Pasa sobre una celda para ver las pistas.",
+    "Наведите на клетку для просмотра подсказок.",
+    "Hover over a cell to see row and column clues."
+  ],
+  "Çizimi tamamlayıp doğrulayarak kaydedin.": [
+    "Rəsmi tamamlayın, yoxlayın və saxlayın.",
+    "Completa el dibujo, valídalo y guárdalo.",
+    "Завершите рисунок, проверьте и сохраните.",
+    "Complete your drawing, validate it and save."
+  ],
+  "Mantıksal çözüm ve tek çözüm ayrı değerlendirilir.": [
+    "Məntiqi həll və yeganə həll ayrı qiymətləndirilir.",
+    "La resolución lógica y la solución única se evalúan por separado.",
+    "Логическая решаемость и единственность проверяются отдельно.",
+    "Logical solvability and uniqueness are evaluated separately."
+  ],
+  "Satır": [
+    "Sətir",
+    "Fila",
+    "Строка",
+    "Row"
+  ],
+  "Sütun": [
+    "Sütun",
+    "Columna",
+    "Столбец",
+    "Column"
+  ],
+  "Kullan": [
+    "İstifadə et",
+    "Usar",
+    "Использовать",
+    "Use"
+  ],
+  "Başlangıç üçlüsü: İlk Adım, Elmas ve Kalp.\nRozetler yalnızca profil görünümünü değiştirir.": [
+    "Başlanğıc üçlüyü: İlk Addım, Almaz və Ürək.\nNişanlar yalnız profil görünüşünü dəyişir.",
+    "Trío inicial: Primer paso, Diamante y Corazón.\nLas insignias solo cambian el perfil.",
+    "Начальная тройка: Первый шаг, Алмаз и Сердце.\nЗначки меняют только вид профиля.",
+    "Starter trio: First Step, Diamond and Heart.\nBadges only change your profile appearance."
+  ],
+  "Profil rozeti": [
+    "Profil nişanı",
+    "Insignia del perfil",
+    "Значок профиля",
+    "Profile badge"
+  ],
+  "Rozet kullanma": [
+    "Nişansız",
+    "Sin insignia",
+    "Без значка",
+    "No badge"
+  ],
+  "Profil rozeti kaydedildi.": [
+    "Profil nişanı saxlanıldı.",
+    "Insignia guardada.",
+    "Значок сохранён.",
+    "Profile badge saved."
+  ],
+  "Rozet kaydedilemedi: {0}": [
+    "Nişan saxlanmadı: {0}",
+    "No se pudo guardar la insignia: {0}",
+    "Не удалось сохранить значок: {0}",
+    "Could not save badge: {0}"
+  ],
+  "Tüm görevler tamamlandı!": [
+    "Bütün tapşırıqlar tamamlandı!",
+    "¡Todas las misiones completadas!",
+    "Все задания выполнены!",
+    "All missions completed!"
+  ],
+  "Süre sınırı yok. Her farklı bulmaca bir yıldız kazandırır.\nYardım kullanmak görevleri engellemez.": [
+    "Vaxt məhdudiyyəti yoxdur. Hər fərqli tapmaca bir ulduz qazandırır.\nKömək tapşırıqlara mane olmur.",
+    "Sin límite de tiempo. Cada puzle distinto da una estrella.\nUsar ayuda no bloquea las misiones.",
+    "Без ограничения времени. Каждая новая головоломка даёт звезду.\nПомощь не мешает выполнению заданий.",
+    "No time limit. Each different puzzle earns a star.\nUsing help does not block missions."
+  ],
+  "Kayıtlar hazırlanıyor…": [
+    "Yaddaş hazırlanır…",
+    "Preparando partidas…",
+    "Подготовка сохранений…",
+    "Preparing saves…"
+  ],
+  "Bulmacalar yükleniyor…": [
+    "Tapmacalar yüklənir…",
+    "Cargando puzles…",
+    "Загрузка головоломок…",
+    "Loading puzzles…"
+  ],
+  "Oyun hazırlanıyor…": [
+    "Oyun hazırlanır…",
+    "Preparando el juego…",
+    "Подготовка игры…",
+    "Preparing game…"
+  ],
+  "Sürüklemeyi yatay/dikey kilitle": [
+    "Sürükləməni üfüqi/şaquli kilidlə",
+    "Bloquear arrastre horizontal/vertical",
+    "Фиксировать перетаскивание по оси",
+    "Lock dragging horizontally/vertically"
+  ],
+  "İpucu şeritlerini sabitle": [
+    "İpucu zolaqlarını sabitlə",
+    "Fijar bandas de pistas",
+    "Закрепить полосы подсказок",
+    "Pin clue strips"
+  ],
+  "Geniş ipucu şeritleri": [
+    "Geniş ipucu zolaqları",
+    "Bandas de pistas amplias",
+    "Широкие полосы подсказок",
+    "Expanded clue strips"
+  ],
+  "İpucu yazı boyutu": [
+    "İpucu şrift ölçüsü",
+    "Tamaño de las pistas",
+    "Размер шрифта подсказок",
+    "Clue text size"
+  ],
+  "Küçük": [
+    "Kiçik",
+    "Pequeño",
+    "Маленький",
+    "Small"
+  ],
+  "Normal": [
+    "Normal",
+    "Normal",
+    "Обычный",
+    "Normal"
+  ],
+  "Büyük": [
+    "Böyük",
+    "Grande",
+    "Большой",
+    "Large"
+  ],
+  "Çok büyük": [
+    "Çox böyük",
+    "Muy grande",
+    "Очень большой",
+    "Extra large"
+  ],
+  "İpuçlarını okuyacak kadar yakınlaştır": [
+    "İpuclarını oxumaq üçün yaxınlaşdır",
+    "Acercar para leer las pistas",
+    "Приблизить для чтения подсказок",
+    "Zoom to readable clues"
+  ],
+  "Aktif hücrenin satır ve sütun ipuçları burada görünür.": [
+    "Aktiv xananın sətir və sütun ipucları burada görünür.",
+    "Aquí aparecen las pistas de la celda activa.",
+    "Здесь отображаются подсказки активной клетки.",
+    "The active cell's row and column clues appear here."
+  ],
+  "Hücreyi doldur": [
+    "Xananı doldur",
+    "Rellenar celda",
+    "Закрасить клетку",
+    "Fill cell"
+  ],
+  "X işareti": [
+    "X işarəsi",
+    "Marca X",
+    "Метка X",
+    "Cross mark"
+  ],
+  "İşareti sil": [
+    "İşarəni sil",
+    "Borrar marca",
+    "Стереть метку",
+    "Erase mark"
+  ],
+  "Kalem notu (aynı nota tekrar basarak sil)": [
+    "Qələm qeydi (silmək üçün yenidən bas)",
+    "Nota de lápiz (pulsa de nuevo para borrar)",
+    "Заметка (нажмите повторно для удаления)",
+    "Pencil note (press again to erase)"
+  ],
+  "Tahtayı taşı": [
+    "Lövhəni daşı",
+    "Mover tablero",
+    "Переместить поле",
+    "Pan board"
+  ],
+  "Geçici işaret: {0}": [
+    "Müvəqqəti işarə: {0}",
+    "Marca temporal: {0}",
+    "Временная метка: {0}",
+    "Temporary mark: {0}"
+  ],
+  "Geçici işaretçiler": [
+    "Müvəqqəti işarələr",
+    "Marcas temporales",
+    "Временные метки",
+    "Temporary markers"
+  ],
+  "Nokta": [
+    "Nöqtə",
+    "Punto",
+    "Точка",
+    "Dot"
+  ],
+  "Deneme modu": [
+    "Sınaq rejimi",
+    "Modo de prueba",
+    "Пробный режим",
+    "Trial mode"
+  ],
+  "Deneme Modu": [
+    "Sınaq rejimi",
+    "Modo de prueba",
+    "Пробный режим",
+    "Trial mode"
+  ],
+  "★  Bulmaca tamamlandı!": [
+    "★  Tapmaca tamamlandı!",
+    "★  ¡Puzle completado!",
+    "★  Головоломка решена!",
+    "★  Puzzle completed!"
+  ],
+  "Tahtada kal": [
+    "Lövhədə qal",
+    "Quedarse en el tablero",
+    "Остаться на поле",
+    "Stay on board"
+  ],
+  "Bu bulmacanın eşya ödülü bulunmuyor.": [
+    "Bu tapmacanın əşya mükafatı yoxdur.",
+    "Este puzle no tiene premio de objeto.",
+    "У этой головоломки нет награды-предмета.",
+    "This puzzle has no item reward."
+  ],
+  "Ödül kaydedilemedi. Kaydı tekrar deneyin.": [
+    "Mükafat saxlanmadı. Yenidən saxlayın.",
+    "No se pudo guardar el premio. Inténtalo de nuevo.",
+    "Не удалось сохранить награду. Повторите попытку.",
+    "Could not save reward. Try saving again."
+  ],
+  "Kazandığın ödül: 1 × {0}": [
+    "Qazandığın mükafat: 1 × {0}",
+    "Premio obtenido: 1 × {0}",
+    "Получена награда: 1 × {0}",
+    "Reward earned: 1 × {0}"
+  ],
+  "{0} ödülü daha önce alındı.": [
+    "{0} mükafatı əvvəl alınıb.",
+    "El premio {0} ya se recibió.",
+    "Награда {0} уже получена.",
+    "The {0} reward was already claimed."
+  ],
+  "Görev ilerlemesi kaydedilemedi.": [
+    "Tapşırıq irəliləyişi saxlanmadı.",
+    "No se pudo guardar el progreso de la misión.",
+    "Не удалось сохранить прогресс задания.",
+    "Could not save mission progress."
+  ],
+  "+1 yıldız": [
+    "+1 ulduz",
+    "+1 estrella",
+    "+1 звезда",
+    "+1 star"
+  ],
+  "İlk tamamlama!": [
+    "İlk tamamlama!",
+    "¡Primera vez completado!",
+    "Первое решение!",
+    "First completion!"
+  ],
+  "Yeni rozet": [
+    "Yeni nişan",
+    "Nueva insignia",
+    "Новый значок",
+    "New badge"
+  ],
+  "Görev ödülü": [
+    "Tapşırıq mükafatı",
+    "Premio de misión",
+    "Награда за задание",
+    "Mission reward"
+  ],
+  "Analiz Merceği": [
+    "Təhlil Linzası",
+    "Lupa de análisis",
+    "Лупа анализа",
+    "Analysis Lens"
+  ],
+  "Mantık İpucu": [
+    "Məntiq İpucu",
+    "Pista lógica",
+    "Логическая подсказка",
+    "Logic Hint"
+  ],
+  "Hata Kontrolü": [
+    "Xəta Yoxlaması",
+    "Revisión de errores",
+    "Проверка ошибок",
+    "Error Check"
+  ],
+  "Satır Tarayıcı": [
+    "Sətir Skaneri",
+    "Escáner de filas",
+    "Сканер строк",
+    "Row Scanner"
+  ],
+  "Sütun Tarayıcı": [
+    "Sütun Skaneri",
+    "Escáner de columnas",
+    "Сканер столбцов",
+    "Column Scanner"
+  ],
+  "İkinci Bakış": [
+    "İkinci Baxış",
+    "Segunda mirada",
+    "Второй взгляд",
+    "Second Look"
+  ],
+  "Hedef seçin": [
+    "Hədəf seçin",
+    "Elige un objetivo",
+    "Выберите цель",
+    "Choose a target"
+  ],
+  "Hedef: seçilmedi": [
+    "Hədəf: seçilməyib",
+    "Objetivo: sin elegir",
+    "Цель: не выбрана",
+    "Target: not selected"
+  ],
+  "Hedef: {0}. {1}": [
+    "Hədəf: {0}. {1}",
+    "Objetivo: {1} {0}",
+    "Цель: {1} {0}",
+    "Target: {1} {0}"
+  ],
+  "satır": [
+    "sətir",
+    "fila",
+    "строка",
+    "row"
+  ],
+  "sütun": [
+    "sütun",
+    "columna",
+    "столбец",
+    "column"
+  ],
+  "Kalan: {0}": [
+    "Qalan: {0}",
+    "Restantes: {0}",
+    "Осталось: {0}",
+    "Remaining: {0}"
+  ],
+  "{0} adet": [
+    "{0} ədəd",
+    "{0} unidades",
+    "Количество: {0}",
+    "{0} items"
+  ],
+  "1 eşya kullanıldı.": [
+    "1 əşya istifadə edildi.",
+    "Se usó 1 objeto.",
+    "Использован 1 предмет.",
+    "1 item used."
+  ],
+  "Bu işlemde eşya harcanmadı.": [
+    "Bu əməliyyatda əşya xərclənmədi.",
+    "No se gastaron objetos.",
+    "Предметы не потрачены.",
+    "No items were spent."
+  ],
+  "Yeni yardım: 1 eşya. Yararlı sonuç yoksa harcanmaz.": [
+    "Yeni kömək: 1 əşya. Faydalı nəticə yoxdursa xərclənmir.",
+    "Nueva ayuda: 1 objeto. Sin resultado útil, no se gasta.",
+    "Новая помощь: 1 предмет. Без полезного результата он не тратится.",
+    "New help: 1 item. No useful result means no cost."
+  ],
+  "Bu ipucu zinciri: 1 eşya kullanıldı. Üç adımın devamı ücretsizdir.": [
+    "Bu ipucu zənciri: 1 əşya. Qalan addımlar pulsuzdur.",
+    "Esta pista cuesta 1 objeto. Los pasos restantes son gratis.",
+    "Эта цепочка стоит 1 предмет. Остальные шаги бесплатны.",
+    "This hint chain costs 1 item. Remaining steps are free."
+  ],
+  "Hedef: tahta genelinde; satır/sütun otomatik belirlenir": [
+    "Hədəf: bütün lövhə; sətir/sütun avtomatik seçilir",
+    "Objetivo: tablero; fila/columna automática",
+    "Цель: всё поле; линия выбирается автоматически",
+    "Target: entire board; line selected automatically"
+  ],
+  "Hedef: tahta genelinde; hücre otomatik belirlenir": [
+    "Hədəf: bütün lövhə; xana avtomatik seçilir",
+    "Objetivo: tablero; celda automática",
+    "Цель: всё поле; клетка выбирается автоматически",
+    "Target: entire board; cell selected automatically"
+  ],
+  "Çizgiyi bul": [
+    "Xətti tap",
+    "Encuentra la línea",
+    "Найдите линию",
+    "Find the line"
+  ],
+  "Mantığı anla": [
+    "Məntiqi anla",
+    "Entiende la lógica",
+    "Поймите логику",
+    "Understand the logic"
+  ],
+  "Kesin hücreyi gör": [
+    "Dəqiq xananı gör",
+    "Ver celda segura",
+    "Показать точную клетку",
+    "See the certain cell"
+  ],
+  "Mantığı açıkla": [
+    "Məntiqi izah et",
+    "Explicar la lógica",
+    "Объяснить логику",
+    "Explain the logic"
+  ],
+  "Kesin hücreyi göster": [
+    "Dəqiq xananı göstər",
+    "Mostrar celda segura",
+    "Показать точную клетку",
+    "Show the certain cell"
+  ],
+  "İpucunu tekrar oku": [
+    "İpucunu yenidən oxu",
+    "Volver a leer la pista",
+    "Прочитать подсказку снова",
+    "Read hint again"
+  ],
+  "Seçilen çizginin durumunu ve olası yerleşimlerini inceler.": [
+    "Seçilən xəttin vəziyyətini və mümkün yerləşmələri yoxlayır.",
+    "Analiza el estado y las posiciones posibles de la línea.",
+    "Анализирует состояние и варианты выбранной линии.",
+    "Analyzes the selected line and its possible arrangements."
+  ],
+  "Çizgi, mantık ve kesin hücreyi sırayla gösterir; tahta değişirse kapanır.": [
+    "Xətti, məntiqi və dəqiq xananı göstərir; lövhə dəyişəndə bağlanır.",
+    "Muestra línea, lógica y celda; se cierra al cambiar el tablero.",
+    "Показывает линию, логику и клетку; сбрасывается при изменениях.",
+    "Shows the line, logic and certain cell; resets when the board changes."
+  ],
+  "Çözümle uyuşmayan ilk işareti gösterir.": [
+    "Həllə uyğun olmayan ilk işarəni göstərir.",
+    "Muestra la primera marca incorrecta.",
+    "Показывает первую неверную метку.",
+    "Shows the first mark that differs from the solution."
+  ],
+  "Seçilen satırdaki en çok üç kesin hücreyi gösterir.": [
+    "Seçilmiş sətirdə üçə qədər dəqiq xana göstərir.",
+    "Muestra hasta tres celdas seguras de la fila.",
+    "Показывает до трёх точных клеток строки.",
+    "Shows up to three certain cells in the selected row."
+  ],
+  "Seçilen sütundaki en çok üç kesin hücreyi gösterir.": [
+    "Seçilmiş sütunda üçə qədər dəqiq xana göstərir.",
+    "Muestra hasta tres celdas seguras de la columna.",
+    "Показывает до трёх точных клеток столбца.",
+    "Shows up to three certain cells in the selected column."
+  ],
+  "Çelişki bulunan ilk satır veya sütunu gösterir.": [
+    "Ziddiyyət olan ilk sətir və ya sütunu göstərir.",
+    "Muestra la primera fila o columna con conflicto.",
+    "Показывает первую линию с противоречием.",
+    "Shows the first row or column with a contradiction."
+  ],
+  "Sıradaki: {0} ({1}/{2})": [
+    "Növbəti: {0} ({1}/{2})",
+    "Siguiente: {0} ({1}/{2})",
+    "Далее: {0} ({1}/{2})",
+    "Next: {0} ({1}/{2})"
+  ],
+  "İlk bulmacanı tamamla": [
+    "İlk tapmacanı tamamla",
+    "Completa tu primer puzle",
+    "Решите первую головоломку",
+    "Complete your first puzzle"
+  ],
+  "3 farklı bulmaca tamamla": [
+    "3 fərqli tapmaca tamamla",
+    "Completa 3 puzles distintos",
+    "Решите 3 разные головоломки",
+    "Complete 3 different puzzles"
+  ],
+  "Bir renkli bulmaca tamamla": [
+    "Rəngli tapmaca tamamla",
+    "Completa un puzle de color",
+    "Решите цветную головоломку",
+    "Complete a color puzzle"
+  ],
+  "Başlangıç üçlüsünü tamamla": [
+    "Başlanğıc üçlüyünü tamamla",
+    "Completa el trío inicial",
+    "Завершите начальную тройку",
+    "Complete the starter trio"
+  ],
+  "10 farklı bulmaca tamamla": [
+    "10 fərqli tapmaca tamamla",
+    "Completa 10 puzles distintos",
+    "Решите 10 разных головоломок",
+    "Complete 10 different puzzles"
+  ],
+  "Desen Kaşifi": [
+    "Naxış Kəşfçisi",
+    "Explorador de patrones",
+    "Исследователь узоров",
+    "Pattern Explorer"
+  ],
+  "Renk Ustası": [
+    "Rəng Ustası",
+    "Maestro del color",
+    "Мастер цвета",
+    "Color Master"
+  ],
+  "Koleksiyoncu": [
+    "Kolleksiyaçı",
+    "Coleccionista",
+    "Коллекционер",
+    "Collector"
+  ],
+  "Mozaik Ustası": [
+    "Mozaika Ustası",
+    "Maestro del mosaico",
+    "Мастер мозаики",
+    "Mosaic Master"
+  ],
+  "{0} rozeti": [
+    "{0} nişanı",
+    "Insignia {0}",
+    "Значок «{0}»",
+    "{0} badge"
+  ],
+  "Açıldı": [
+    "Açıldı",
+    "Desbloqueado",
+    "Открыто",
+    "Unlocked"
+  ],
+  "Baştan dene": [
+    "Yenidən sına",
+    "Reintentar",
+    "Начать заново",
+    "Try again"
+  ],
+  "Şimdilik kapat": [
+    "Hələlik bağla",
+    "Cerrar por ahora",
+    "Закрыть пока",
+    "Close for now"
+  ],
+  "Önceki": [
+    "Əvvəlki",
+    "Anterior",
+    "Назад",
+    "Previous"
+  ],
+  "Sonraki": [
+    "Növbəti",
+    "Siguiente",
+    "Далее",
+    "Next"
+  ],
+  "Öğreticiyi bitir": [
+    "Təlimi bitir",
+    "Terminar tutorial",
+    "Завершить обучение",
+    "Finish tutorial"
+  ],
+  "Ücretsiz ipucu": [
+    "Pulsuz ipucu",
+    "Pista gratis",
+    "Бесплатная подсказка",
+    "Free hint"
+  ],
+  "Ücretsiz alıştırma": [
+    "Pulsuz məşq",
+    "Práctica gratis",
+    "Бесплатное упражнение",
+    "Free practice"
+  ],
+  "Alıştırma rengi": [
+    "Məşq rəngi",
+    "Color de práctica",
+    "Цвет упражнения",
+    "Practice color"
+  ],
+  "Turuncu": [
+    "Narıncı",
+    "Naranja",
+    "Оранжевый",
+    "Orange"
+  ],
+  "Mavi": [
+    "Mavi",
+    "Azul",
+    "Синий",
+    "Blue"
+  ],
+  "Dolu blok": [
+    "Dolu blok",
+    "Bloque lleno",
+    "Сплошной блок",
+    "Filled block"
+  ],
+  "Boş hücre de bir bilgidir": [
+    "Boş xana da məlumatdır",
+    "Las celdas vacías también informan",
+    "Пустая клетка тоже информация",
+    "Empty cells are information too"
+  ],
+  "Aynı renk, ayrı bloklar": [
+    "Eyni rəng, ayrı bloklar",
+    "Mismo color, bloques separados",
+    "Один цвет, разные блоки",
+    "Same color, separate blocks"
+  ],
+  "Farklı renkler bitişebilir": [
+    "Fərqli rənglər bitişə bilər",
+    "Colores distintos pueden tocarse",
+    "Разные цвета могут соприкасаться",
+    "Different colors can touch"
+  ],
+  "5 sayısı, art arda beş dolu hücre demektir. Doldur aracını seç ve beş hücreyi sürükleyerek boya.": [
+    "5 rəqəmi ardıcıl beş dolu xana deməkdir. Doldur alətini seç və beş xananı boya.",
+    "El 5 indica cinco celdas llenas seguidas. Elige Rellenar y arrastra sobre las cinco.",
+    "Число 5 означает пять закрашенных клеток подряд. Выберите закраску и проведите по пяти клеткам.",
+    "5 means five filled cells in a row. Select Fill and drag across all five cells."
+  ],
+  "1 1, iki ayrı blok demektir. İlk ve son hücreyi doldur; araya X koy. Aynı renkte iki blok arasında en az bir boş hücre gerekir.": [
+    "1 1 iki ayrı blokdur. İlk və son xananı doldur, araya X qoy. Eyni rəngli bloklar arasında boş xana olmalıdır.",
+    "1 1 indica dos bloques. Rellena la primera y última celda y pon X entre ellas. Los bloques del mismo color necesitan un espacio.",
+    "1 1 означает два блока. Закрасьте первую и последнюю клетки, между ними поставьте X. Между блоками одного цвета нужен пробел.",
+    "1 1 means two blocks. Fill the first and last cell, with X between them. Same-color blocks need at least one empty cell between them."
+  ],
+  "Turuncu 2 2: iki turuncu hücre, bir X, iki turuncu hücre. Renkli bulmacada da aynı renkteki ayrı bloklar arasında boşluk gerekir.": [
+    "Narıncı 2 2: iki narıncı xana, X, iki narıncı xana. Eyni rəngli bloklar arasında boşluq olmalıdır.",
+    "Naranja 2 2: dos celdas naranjas, una X y otras dos naranjas. Los bloques del mismo color necesitan separación.",
+    "Оранжевые 2 2: две клетки, X, ещё две клетки. Между блоками одного цвета нужен пробел.",
+    "Orange 2 2: two orange cells, one X, two orange cells. Same-color blocks still need a gap in color puzzles."
+  ],
+  "Turuncu 2 ve mavi 2 arasında boşluk gerekmez. İlk iki hücreyi turuncu, son iki hücreyi mavi boya. Rengi aşağıdaki seçiciden değiştir.": [
+    "Narıncı 2 və mavi 2 arasında boşluq lazım deyil. İlk iki xananı narıncı, son ikisini mavi boya. Rəngi aşağıdan seç.",
+    "Naranja 2 y azul 2 no necesitan separación. Pinta dos celdas naranjas y dos azules. Cambia el color con el selector.",
+    "Между оранжевыми 2 и синими 2 пробел не нужен. Закрасьте две клетки оранжевым, затем две синим. Меняйте цвет в списке ниже.",
+    "Orange 2 and blue 2 need no gap. Paint the first two cells orange and the last two blue. Change color using the selector below."
+  ],
+  "Alıştırmalar ücretsizdir; envanter ve asıl bulmaca ilerlemen değişmez.": [
+    "Məşqlər pulsuzdur; əşyaların və əsas irəliləyişin dəyişmir.",
+    "Las prácticas son gratis y no cambian tu inventario ni progreso.",
+    "Упражнения бесплатны и не меняют инвентарь и прогресс.",
+    "Practice is free and does not change inventory or puzzle progress."
+  ],
+  "Doğru! Sonraki adıma geçebilirsin.": [
+    "Düzdür! Növbəti addıma keç.",
+    "¡Correcto! Puedes continuar.",
+    "Верно! Можно продолжить.",
+    "Correct! You can continue."
+  ],
+  "Bazı işaretler kuralla uyuşmuyor. Geri al veya Sil ile düzelt.": [
+    "Bəzi işarələr qaydaya uyğun deyil. Geri al və ya Sil ilə düzəlt.",
+    "Algunas marcas no coinciden. Usa Deshacer o Borrar.",
+    "Некоторые метки неверны. Используйте отмену или стирание.",
+    "Some marks do not match. Use Undo or Erase to fix them."
+  ],
+  "Sayıları izleyerek doldur; kesin boşları X ile işaretle.": [
+    "Rəqəmlərə uyğun doldur; boşları X ilə işarələ.",
+    "Sigue los números y marca los vacíos con X.",
+    "Следуйте числам, пустые клетки отмечайте X.",
+    "Follow the numbers and mark certain empty cells with X."
+  ],
+  "Önce uyuşmayan işaretleri geri al veya silip tekrar dene.": [
+    "Uyğun olmayan işarələri sil və yenidən sına.",
+    "Borra las marcas incorrectas y vuelve a intentarlo.",
+    "Сначала удалите неверные метки и повторите.",
+    "Undo or erase incorrect marks, then try again."
+  ],
+  "İpucu hesaplanamadı; tekrar deneyebilirsin.": [
+    "İpucu hesablanmadı; yenidən sına.",
+    "No se pudo calcular la pista; inténtalo de nuevo.",
+    "Не удалось вычислить подсказку; попробуйте снова.",
+    "Could not calculate a hint; try again."
+  ],
+  "✎ Kalem": [
+    "✎ Qələm",
+    "✎ Lápiz",
+    "✎ Карандаш",
+    "✎ Pencil"
+  ],
+  "⌫ Silgi": [
+    "⌫ Pozan",
+    "⌫ Borrador",
+    "⌫ Ластик",
+    "⌫ Eraser"
+  ],
+  "▣ Dolgu": [
+    "▣ Doldur",
+    "▣ Relleno",
+    "▣ Заливка",
+    "▣ Fill"
+  ],
+  "Palette": [
+    "Palitra",
+    "Paleta",
+    "Палитра",
+    "Palette"
+  ],
+  "Siyah beyaz": [
+    "Ağ-qara",
+    "Blanco y negro",
+    "Чёрно-белый",
+    "Black and white"
+  ],
+  "Dönüşüm": [
+    "Çevirmə",
+    "Conversión",
+    "Преобразование",
+    "Conversion"
+  ],
+  "Doluluk eşiği": [
+    "Dolma həddi",
+    "Umbral de relleno",
+    "Порог заполнения",
+    "Fill threshold"
+  ],
+  "Renk sayısı": [
+    "Rəng sayı",
+    "Número de colores",
+    "Число цветов",
+    "Color count"
+  ],
+  "Daha yüksek değer daha çok hücreyi doldurur": [
+    "Böyük dəyər daha çox xana doldurur",
+    "Un valor mayor rellena más celdas",
+    "Большее значение заполняет больше клеток",
+    "Higher values fill more cells"
+  ],
+  "Bulmaca Önizlemesi": [
+    "Tapmaca önbaxışı",
+    "Vista previa del puzle",
+    "Предпросмотр головоломки",
+    "Puzzle Preview"
+  ],
+  "Bulmaca çerçevesini taşımak için sürükle": [
+    "Tapmaca çərçivəsini daşımaq üçün sürüklə",
+    "Arrastra para mover el marco",
+    "Перетащите рамку головоломки",
+    "Drag to move the puzzle frame"
+  ],
+  "İleri al": [
+    "İrəli al",
+    "Rehacer",
+    "Повторить",
+    "Redo"
+  ],
+  "Deneme modunu başlat": [
+    "Sınaq rejimini başlat",
+    "Iniciar modo de prueba",
+    "Начать пробный режим",
+    "Start trial mode"
+  ],
+  "DENEME MODU · Kesik çerçeveler geçici hamlelerdir. ✓ Kabul et veya × İptal et.": [
+    "SINAQ REJİMİ · Kəsik çərçivələr müvəqqəti gedişlərdir. ✓ Qəbul et və ya × Ləğv et.",
+    "MODO DE PRUEBA · Los bordes discontinuos son movimientos temporales. ✓ Aceptar o × Cancelar.",
+    "ПРОБНЫЙ РЕЖИМ · Пунктирные рамки — временные ходы. ✓ Принять или × Отменить.",
+    "TRIAL MODE · Dashed borders indicate temporary moves. ✓ Accept or × Cancel."
+  ],
+  "Kullan · 1 eşya": [
+    "İstifadə et · 1 əşya",
+    "Usar · 1 objeto",
+    "Использовать · 1 предмет",
+    "Use · 1 item"
+  ],
+  "Yardımcıyı kullan": [
+    "Köməkçidən istifadə et",
+    "Usar ayuda",
+    "Использовать помощь",
+    "Use helper"
+  ],
+  "Tahta değişti; bu ipucu zinciri kapandı. Önceki eşya harcaması geri alınmaz.": [
+    "Lövhə dəyişdi; ipucu zənciri bağlandı. Xərclənmiş əşya qaytarılmır.",
+    "El tablero cambió; la pista se cerró. El objeto gastado no se devuelve.",
+    "Поле изменилось; цепочка подсказок закрыта. Потраченный предмет не возвращается.",
+    "The board changed; this hint chain closed. The spent item is not refunded."
+  ],
+  "Tahta değişti; ipucu zinciri kapandı.": [
+    "Lövhə dəyişdi; ipucu zənciri bağlandı.",
+    "El tablero cambió; la pista se cerró.",
+    "Поле изменилось; подсказка закрыта.",
+    "The board changed; the hint chain closed."
+  ],
+  "Yararlı sonuç bulunamadı; öğe harcanmadı.": [
+    "Faydalı nəticə tapılmadı; əşya xərclənmədi.",
+    "No hubo resultado útil; no se gastó el objeto.",
+    "Полезного результата нет; предмет не потрачен.",
+    "No useful result; no item was spent."
+  ],
+  "Yardım kullanılamadı: {0}": [
+    "Kömək istifadə edilmədi: {0}",
+    "No se pudo usar la ayuda: {0}",
+    "Не удалось использовать помощь: {0}",
+    "Could not use help: {0}"
+  ],
+  "Tek çözüm": [
+    "Yeganə həll",
+    "Solución única",
+    "Единственное решение",
+    "Unique solution"
+  ],
+  "Birden fazla çözüm": [
+    "Birdən çox həll",
+    "Varias soluciones",
+    "Несколько решений",
+    "Multiple solutions"
+  ],
+  "Çözüm yok": [
+    "Həll yoxdur",
+    "Sin solución",
+    "Нет решения",
+    "No solution"
+  ],
+  "Doğrulama sınırına ulaşıldı": [
+    "Yoxlama həddinə çatıldı",
+    "Límite de validación alcanzado",
+    "Достигнут предел проверки",
+    "Validation limit reached"
+  ],
+  "Tek çözüm — bulmaca .nono dosyasına kaydedildi.": [
+    "Yeganə həll — tapmaca .nono faylına saxlanıldı.",
+    "Solución única: puzle guardado en .nono.",
+    "Единственное решение — сохранено в .nono.",
+    "Unique solution — puzzle saved to a .nono file."
+  ],
+  "Birden fazla çözüm — bulmaca kaydedilmedi.": [
+    "Birdən çox həll — tapmaca saxlanmadı.",
+    "Varias soluciones: puzle no guardado.",
+    "Несколько решений — головоломка не сохранена.",
+    "Multiple solutions — puzzle was not saved."
+  ],
+  "Çözüm yok — bulmaca kaydedilmedi.": [
+    "Həll yoxdur — tapmaca saxlanmadı.",
+    "Sin solución: puzle no guardado.",
+    "Нет решения — головоломка не сохранена.",
+    "No solution — puzzle was not saved."
+  ],
+  "Doğrulama sınırına ulaşıldı — bulmaca kaydedilmedi.": [
+    "Yoxlama həddi — tapmaca saxlanmadı.",
+    "Límite alcanzado: puzle no guardado.",
+    "Предел проверки — головоломка не сохранена.",
+    "Validation limit reached — puzzle was not saved."
+  ],
+  "Çizim değişti; kalite analizini yenileyin.": [
+    "Rəsm dəyişdi; təhlili yeniləyin.",
+    "El dibujo cambió; repite el análisis.",
+    "Рисунок изменился; повторите анализ.",
+    "Drawing changed; rerun quality analysis."
+  ],
+  "Satır ve sütun ipuçları güncellendi.": [
+    "Sətir və sütun ipucları yeniləndi.",
+    "Pistas de filas y columnas actualizadas.",
+    "Подсказки строк и столбцов обновлены.",
+    "Row and column clues updated."
+  ],
+  "Analiz yapılamadı: {0}": [
+    "Təhlil alınmadı: {0}",
+    "No se pudo analizar: {0}",
+    "Не удалось выполнить анализ: {0}",
+    "Analysis failed: {0}"
+  ],
+  "Görsel dönüştürülemedi: {0}": [
+    "Şəkil çevrilmədi: {0}",
+    "No se pudo convertir la imagen: {0}",
+    "Не удалось преобразовать изображение: {0}",
+    "Could not convert image: {0}"
+  ],
+  "Görsel Seç": [
+    "Şəkil seç",
+    "Elegir imagen",
+    "Выбрать изображение",
+    "Choose Image"
+  ],
+  "Görseller (*.png *.jpg *.jpeg *.webp)": [
+    "Şəkillər (*.png *.jpg *.jpeg *.webp)",
+    "Imágenes (*.png *.jpg *.jpeg *.webp)",
+    "Изображения (*.png *.jpg *.jpeg *.webp)",
+    "Images (*.png *.jpg *.jpeg *.webp)"
+  ],
+  "boş": [
+    "boş",
+    "vacío",
+    "пусто",
+    "empty"
+  ],
+  "Alıştırma": [
+    "Məşq",
+    "Práctica",
+    "Упражнение",
+    "Practice"
+  ],
+  "{0}. satır: {1}": [
+    "{0}. sətir: {1}",
+    "Fila {0}: {1}",
+    "Строка {0}: {1}",
+    "Row {0}: {1}"
+  ],
+  "{0}. sütun: {1}": [
+    "{0}. sütun: {1}",
+    "Columna {0}: {1}",
+    "Столбец {0}: {1}",
+    "Column {0}: {1}"
+  ],
+  "Dolu kareye aynı renkle tekrar tıklayarak boyayı kaldır. İpucu sayısına tıklayarak çizik at veya kaldır; kaldırınca yalnız o çizginin otomatik X'leri kaldırılır; elle konanlar korunur. Bir satır veya sütunun tüm sayılarını çizdiğinde kalan boş kareler X olur. Kalem notları kesin işaret değildir ve çözümü etkilemez. Sağ tık X koyar. Sürüklemede ilk hareket yönü kilitlenir; ayarlardan kapatılabilir. Sayaç geçilen farklı hücreleri sayar. Büyük bulmacalarda ipucu yazısını büyüt veya okunabilir yakınlaştırmayı kullan; uzun ipucu şeritlerinde fare tekerleğiyle sayıları kaydır. Üst şeridi sürükleyerek çerçeveyi taşı; orta tuş veya taşıma aracıyla yakınlaştırılmış ızgarayı kaydır.": [
+    "Dolu xanaya eyni rənglə yenidən basaraq rəngi sil. İpucu rəqəminə basaraq üstündən xətt çək və ya ləğv et. Son rəqəm silindikdə qalan boş xanalar X olur. Qələm qeydləri müvəqqətidir. Sağ düymə X qoyur. Sürükləmə istiqaməti ayarlardan kilidlənə bilər. Siçan çarxı ilə yaxınlaşdır, orta düymə ilə lövhəni daşı. İpuclarının ölçüsünü ayarlardan dəyiş. Yuxarı zolağı sürükləyərək çərçivəni daşı.",
+    "Pulsa una celda con el mismo color para borrar su pintura. Pulsa una pista para tacharla o restaurarla. Al tachar la última pista, las celdas vacías restantes reciben X. Las notas de lápiz son temporales. El clic derecho coloca X. Puedes bloquear la dirección de arrastre en ajustes. Usa la rueda para ampliar y el botón central para mover el tablero. Ajusta el tamaño de las pistas en ajustes y arrastra la banda superior para mover el marco.",
+    "Нажмите закрашенную клетку тем же цветом, чтобы стереть её. Нажмите число подсказки, чтобы зачеркнуть или восстановить его. После последнего числа в оставшихся пустых клетках ставится X. Карандашные заметки временные. Правая кнопка ставит X. Направление перетаскивания фиксируется в настройках. Колесо меняет масштаб, средняя кнопка перемещает поле. Размер подсказок меняется в настройках. Верхняя полоса перемещает рамку.",
+    "Click a filled cell with the same color to erase it. Click a clue number to cross it out or restore it. Crossing the last clue marks remaining empty cells with X. Pencil notes are temporary. Right-click places X. Drag direction can be locked in settings. Use the wheel to zoom and the middle button to pan. Adjust clue text size in settings. Drag the top strip to move the frame."
+  ],
+  "İpuçları": [
+    "İpucları",
+    "Ayudas",
+    "Подсказки",
+    "Hints"
+  ],
+  "Bulmacayı tam ekran aç · F11": [
+    "Tapmacanı tam ekran aç · F11",
+    "Puzle a pantalla completa · F11",
+    "Головоломка на весь экран · F11",
+    "Fullscreen puzzle · F11"
+  ],
+  "Bulmaca · Tam ekran": [
+    "Tapmaca · Tam ekran",
+    "Puzle · Pantalla completa",
+    "Головоломка · Полный экран",
+    "Puzzle · Fullscreen"
+  ],
+  "Tam ekrandan çık · Esc": [
+    "Tam ekrandan çıx · Esc",
+    "Salir de pantalla completa · Esc",
+    "Выйти из полного экрана · Esc",
+    "Exit fullscreen · Esc"
+  ],
+  "Mantar": [
+    "Göbələk",
+    "Seta",
+    "Гриб",
+    "Mushroom"
+  ],
+  "Çam Ağacı": [
+    "Şam Ağacı",
+    "Pino",
+    "Сосна",
+    "Pine Tree"
+  ],
+  "Balık": [
+    "Balıq",
+    "Pez",
+    "Рыба",
+    "Fish"
+  ],
+  "Kedi": [
+    "Pişik",
+    "Gato",
+    "Кошка",
+    "Cat"
+  ],
+  "Kupa": [
+    "Kubok",
+    "Copa",
+    "Кубок",
+    "Cup"
+  ],
+  "Şemsiye": [
+    "Çətir",
+    "Paraguas",
+    "Зонт",
+    "Umbrella"
+  ],
+  "Anahtar": [
+    "Açar",
+    "Llave",
+    "Ключ",
+    "Key"
+  ],
+  "Çapa": [
+    "Lövbər",
+    "Ancla",
+    "Якорь",
+    "Anchor"
+  ],
+  "Taç": [
+    "Tac",
+    "Corona",
+    "Корона",
+    "Crown"
+  ],
+  "Kelebek": [
+    "Kəpənək",
+    "Mariposa",
+    "Бабочка",
+    "Butterfly"
+  ],
+  "Mektup": [
+    "Məktub",
+    "Carta",
+    "Письмо",
+    "Letter"
+  ],
+  "Şimşek": [
+    "Şimşək",
+    "Relámpago",
+    "Молния",
+    "Lightning"
+  ],
+  "Elma": [
+    "Alma",
+    "Manzana",
+    "Яблоко",
+    "Apple"
+  ],
+  "Ok": [
+    "Ox",
+    "Flecha",
+    "Стрела",
+    "Arrow"
+  ],
+  "Kaktüs": [
+    "Kaktus",
+    "Cactus",
+    "Кактус",
+    "Cactus"
+  ],
+  "Hediye": [
+    "Hədiyyə",
+    "Regalo",
+    "Подарок",
+    "Gift"
+  ],
+  "Roket": [
+    "Raket",
+    "Cohete",
+    "Ракета",
+    "Rocket"
+  ],
+  "Robot": [
+    "Robot",
+    "Robot",
+    "Робот",
+    "Robot"
+  ],
+  "Lokomotif": [
+    "Lokomotiv",
+    "Locomotora",
+    "Локомотив",
+    "Locomotive"
+  ],
+  "Kamera": [
+    "Kamera",
+    "Cámara",
+    "Камера",
+    "Camera"
+  ],
+  "Gitar": [
+    "Gitara",
+    "Guitarra",
+    "Гитара",
+    "Guitar"
+  ],
+  "Kuş": [
+    "Quş",
+    "Pájaro",
+    "Птица",
+    "Bird"
+  ],
+  "Tavşan": [
+    "Dovşan",
+    "Conejo",
+    "Кролик",
+    "Rabbit"
+  ],
+  "Yengeç": [
+    "Yengəc",
+    "Cangrejo",
+    "Краб",
+    "Crab"
+  ],
+  "Kaplumbağa": [
+    "Tısbağa",
+    "Tortuga",
+    "Черепаха",
+    "Turtle"
+  ],
+  "Yel Değirmeni": [
+    "Yel Dəyirmanı",
+    "Molino de viento",
+    "Ветряная мельница",
+    "Windmill"
+  ],
+  "Fincan": [
+    "Fincan",
+    "Taza",
+    "Чашка",
+    "Mug"
+  ],
+  "Dondurma": [
+    "Dondurma",
+    "Helado",
+    "Мороженое",
+    "Ice Cream"
+  ],
+  "Pasta": [
+    "Tort",
+    "Pastel",
+    "Торт",
+    "Cake"
+  ],
+  "Telefon": [
+    "Telefon",
+    "Teléfono",
+    "Телефон",
+    "Phone"
+  ],
+  "Çanta": [
+    "Çanta",
+    "Bolso",
+    "Сумка",
+    "Bag"
+  ],
+  "Saat": [
+    "Saat",
+    "Reloj",
+    "Часы",
+    "Clock"
+  ],
+  "Pencere": [
+    "Pəncərə",
+    "Ventana",
+    "Окно",
+    "Window"
+  ],
+  "Fener": [
+    "Fənər",
+    "Farol",
+    "Фонарь",
+    "Lantern"
+  ],
+  "Orman Evi": [
+    "Meşə Evi",
+    "Casa del bosque",
+    "Лесной домик",
+    "Forest House"
+  ],
+  "Liman": [
+    "Liman",
+    "Puerto",
+    "Гавань",
+    "Harbor"
+  ],
+  "Dağ Kampı": [
+    "Dağ Düşərgəsi",
+    "Campamento de montaña",
+    "Горный лагерь",
+    "Mountain Camp"
+  ],
+  "Uzay Üssü": [
+    "Kosmik Baza",
+    "Base espacial",
+    "Космическая база",
+    "Space Base"
+  ],
+  "Köy Meydanı": [
+    "Kənd Meydanı",
+    "Plaza del pueblo",
+    "Деревенская площадь",
+    "Village Square"
+  ],
+  "Tren İstasyonu": [
+    "Qatar Stansiyası",
+    "Estación de tren",
+    "Вокзал",
+    "Train Station"
+  ],
+  "Sahil": [
+    "Sahil",
+    "Costa",
+    "Побережье",
+    "Coast"
+  ],
+  "Gece Bahçesi": [
+    "Gecə Bağı",
+    "Jardín nocturno",
+    "Ночной сад",
+    "Night Garden"
+  ],
+  "Kış Kulübesi": [
+    "Qış Daxması",
+    "Cabaña de invierno",
+    "Зимняя хижина",
+    "Winter Cabin"
+  ],
+  "Göl Kıyısı": [
+    "Göl Sahili",
+    "Orilla del lago",
+    "Берег озера",
+    "Lakeside"
+  ],
+  "Müzik Sokağı": [
+    "Musiqi Küçəsi",
+    "Calle de la música",
+    "Музыкальная улица",
+    "Music Street"
+  ],
+  "Çiçek Pazarı": [
+    "Çiçək Bazarı",
+    "Mercado de flores",
+    "Цветочный рынок",
+    "Flower Market"
+  ],
+  "Çöl Yolu": [
+    "Səhra Yolu",
+    "Camino del desierto",
+    "Пустынная дорога",
+    "Desert Road"
+  ],
+  "Denizaltı": [
+    "Sualtı",
+    "Submarino",
+    "Подводный мир",
+    "Underwater"
+  ],
+  "Kahve Molası": [
+    "Qəhvə Fasiləsi",
+    "Pausa para café",
+    "Кофейная пауза",
+    "Coffee Break"
+  ],
+  "Doğum Günü": [
+    "Ad Günü",
+    "Cumpleaños",
+    "День рождения",
+    "Birthday"
+  ],
+  "Oyuncakçı": [
+    "Oyuncaq Dükanı",
+    "Juguetería",
+    "Магазин игрушек",
+    "Toy Shop"
+  ],
+  "Saat Kulesi": [
+    "Saat Qülləsi",
+    "Torre del reloj",
+    "Часовая башня",
+    "Clock Tower"
+  ],
+  "Selçuklu Yıldızı": [
+    "Səlcuq Ulduzu",
+    "Estrella selyúcida",
+    "Сельджукская звезда",
+    "Seljuk Star"
+  ],
+  "Dokuma": [
+    "Toxuma",
+    "Tejido",
+    "Плетение",
+    "Weave"
+  ],
+  "Baklava Deseni": [
+    "Paxlava Naxışı",
+    "Rombos",
+    "Ромбовый узор",
+    "Diamond Pattern"
+  ],
+  "Gül Penceresi": [
+    "Gül Pəncərəsi",
+    "Rosetón",
+    "Окно-роза",
+    "Rose Window"
+  ],
+  "Labirent": [
+    "Labirint",
+    "Laberinto",
+    "Лабиринт",
+    "Labyrinth"
+  ],
+  "Çini": [
+    "Kaşı",
+    "Azulejo",
+    "Изразец",
+    "Ceramic Tile"
+  ],
+  "Pusula": [
+    "Kompas",
+    "Brújula",
+    "Компас",
+    "Compass"
+  ],
+  "Kristal": [
+    "Kristal",
+    "Cristal",
+    "Кристалл",
+    "Crystal"
+  ],
+  "Sarmal": [
+    "Spiral",
+    "Espiral",
+    "Спираль",
+    "Spiral"
+  ],
+  "Kilim": [
+    "Kilim",
+    "Kilim",
+    "Килим",
+    "Kilim"
+  ],
+  "Petek": [
+    "Şan",
+    "Panal",
+    "Соты",
+    "Honeycomb"
+  ],
+  "Dalga": [
+    "Dalğa",
+    "Ola",
+    "Волна",
+    "Wave"
+  ],
+  "Yaprak Deseni": [
+    "Yarpaq Naxışı",
+    "Patrón de hojas",
+    "Листовой узор",
+    "Leaf Pattern"
+  ],
+  "Vitray": [
+    "Vitraj",
+    "Vidriera",
+    "Витраж",
+    "Stained Glass"
+  ],
+  "Kar Tanesi": [
+    "Qar Dənəsi",
+    "Copo de nieve",
+    "Снежинка",
+    "Snowflake"
+  ],
+  "Kemer": [
+    "Tağ",
+    "Arco",
+    "Арка",
+    "Arch"
+  ],
+  "Dama Bahçesi": [
+    "Dama Bağı",
+    "Jardín de cuadros",
+    "Шахматный сад",
+    "Checker Garden"
+  ],
+  "Güneş Motifi": [
+    "Günəş Naxışı",
+    "Motivo solar",
+    "Солнечный узор",
+    "Sun Motif"
+  ],
+  "Satır / Sütun Çözücü": [
+    "Sətir / Sütun Həlledici",
+    "Resolver fila / columna",
+    "Решить строку / столбец",
+    "Row / Column Solver"
+  ],
+  "Akıllı Düzeltme": [
+    "Ağıllı Düzəliş",
+    "Corrección inteligente",
+    "Умное исправление",
+    "Smart Correction"
+  ],
+  "3×3 Alan Çözücü": [
+    "3×3 Sahə Həlledici",
+    "Resolver área 3×3",
+    "Решить область 3×3",
+    "3×3 Area Solver"
+  ],
+  "5×5 Alan Çözücü": [
+    "5×5 Sahə Həlledici",
+    "Resolver área 5×5",
+    "Решить область 5×5",
+    "5×5 Area Solver"
+  ],
+  "10×10 Alan Çözücü": [
+    "10×10 Sahə Həlledici",
+    "Resolver área 10×10",
+    "Решить область 10×10",
+    "10×10 Area Solver"
+  ],
+  "Beş Hücre": [
+    "Beş Xana",
+    "Cinco celdas",
+    "Пять клеток",
+    "Five Cells"
+  ],
+  "Seçilen satır veya sütunu doğru renkler ve X işaretleriyle tamamlar.": [
+    "Seçilmiş sətir və ya sütunu düzgün rənglər və X ilə tamamlayır.",
+    "Completa la fila o columna elegida con colores correctos y X.",
+    "Заполняет выбранную строку или столбец верными цветами и X.",
+    "Completes the selected row or column with correct colors and X marks."
+  ],
+  "Yanlış boyalı bir hücreyi düzeltir; hata yoksa eksik bir hücreyi boyar.": [
+    "Səhv boyalı xananı düzəldir; səhv yoxdursa çatışmayan xananı boyayır.",
+    "Corrige una celda mal pintada; si no hay errores, pinta una celda pendiente.",
+    "Исправляет неверно закрашенную клетку; если ошибок нет, закрашивает пропущенную.",
+    "Corrects a wrongly painted cell; otherwise fills one missing cell."
+  ],
+  "Eksik beş farklı dolu hücreyi doğru renkle boyar.": [
+    "Beş çatışmayan xananı düzgün rənglə boyayır.",
+    "Pinta cinco celdas pendientes con sus colores correctos.",
+    "Закрашивает пять пропущенных клеток верными цветами.",
+    "Fills five different missing cells with their correct colors."
+  ],
+  "{0} hücre çözümlendi.": [
+    "{0} xana həll edildi.",
+    "Se resolvieron {0} celdas.",
+    "Решено клеток: {0}.",
+    "{0} cells solved."
+  ],
+  "Hedef: en çok eksik hücre içeren alan; otomatik seçilir": [
+    "Hədəf: ən çox çatışmayan xanalı sahə; avtomatik seçilir",
+    "Objetivo: área con más celdas pendientes; selección automática",
+    "Цель: область с наибольшим числом нерешённых клеток; автоматически",
+    "Target: area with the most unresolved cells; selected automatically"
+  ],
+  "3×3 alanı doğru renklerle boyar, boş hücreleri X yapar.": [
+    "3×3 sahəni düzgün rənglə boyayır, boş xanalara X qoyur.",
+    "Rellena un área 3×3 y marca los vacíos con X.",
+    "Закрашивает область 3×3, пустые клетки отмечает X.",
+    "Fills a 3×3 area correctly and marks empty cells with X."
+  ],
+  "5×5 alanı doğru renklerle boyar, boş hücreleri X yapar.": [
+    "5×5 sahəni düzgün rənglə boyayır, boş xanalara X qoyur.",
+    "Rellena un área 5×5 y marca los vacíos con X.",
+    "Закрашивает область 5×5, пустые клетки отмечает X.",
+    "Fills a 5×5 area correctly and marks empty cells with X."
+  ],
+  "10×10 alanı doğru renklerle boyar, boş hücreleri X yapar.": [
+    "10×10 sahəni düzgün rənglə boyayır, boş xanalara X qoyur.",
+    "Rellena un área 10×10 y marca los vacíos con X.",
+    "Закрашивает область 10×10, пустые клетки отмечает X.",
+    "Fills a 10×10 area correctly and marks empty cells with X."
+  ],
+  "Tahtada başlangıç hücresine tıkla. Sağ tık veya Esc ile iptal et.": [
+    "Lövhədə başlanğıc xanaya kliklə. Sağ klik və ya Esc ilə ləğv et.",
+    "Haz clic en la celda inicial del tablero. Cancela con clic derecho o Esc.",
+    "Нажмите на начальную клетку поля. Правая кнопка мыши или Esc отменяет выбор.",
+    "Click the starting cell on the board. Right-click or press Esc to cancel."
+  ],
+  "Soldaki satır veya üstteki sütun sayılarına tıkla. Sağ tık veya Esc ile iptal et.": [
+    "Soldakı sətir və ya yuxarıdakı sütun rəqəmlərinə kliklə. Sağ klik və ya Esc ilə ləğv et.",
+    "Haz clic en las pistas de fila a la izquierda o de columna arriba. Cancela con clic derecho o Esc.",
+    "Нажмите на числа строки слева или столбца сверху. Правая кнопка мыши или Esc отменяет выбор.",
+    "Click the row clues on the left or column clues above. Right-click or press Esc to cancel."
+  ],
+  "Sokak Evleri": [
+    "Küçə Evləri",
+    "Casas de la calle",
+    "Уличные дома",
+    "Street Houses"
+  ],
+  "Çiçek Saksısı": [
+    "Çiçək Dibçəyi",
+    "Maceta",
+    "Цветочный горшок",
+    "Flower Pot"
+  ],
+  "Orman Silüeti": [
+    "Meşə Silueti",
+    "Silueta del bosque",
+    "Силуэт леса",
+    "Forest Silhouette"
+  ],
+  "Yelkenli Tekne": [
+    "Yelkənli Qayıq",
+    "Velero",
+    "Парусник",
+    "Sailboat"
+  ],
+  "Kanat Deseni": [
+    "Qanad Naxışı",
+    "Patrón de alas",
+    "Узор крыльев",
+    "Wing Pattern"
+  ],
+  "Kuleler": [
+    "Qüllələr",
+    "Torres",
+    "Башни",
+    "Towers"
+  ],
+  "Piksel Galerisi": [
+    "Piksel Qalereyası",
+    "Galería de píxeles",
+    "Пиксельная галерея",
+    "Pixel Gallery"
+  ],
+  "Geometrik Bahçe": [
+    "Həndəsi Bağ",
+    "Jardín geométrico",
+    "Геометрический сад",
+    "Geometric Garden"
+  ],
+  "Boya": [
+    "Boya",
+    "Pintar",
+    "Закрасить",
+    "Paint"
+  ],
+  "Boş işaretle": [
+    "Boş işarələ",
+    "Marcar vacío",
+    "Отметить пустую",
+    "Mark empty"
+  ],
+  "Taşı · Boşluk + sürükle": [
+    "Daşı · Boşluq + sürüklə",
+    "Mover · Espacio + arrastrar",
+    "Перемещение · Пробел + перетаскивание",
+    "Pan · Space + drag"
+  ],
+  "Okunabilir yakınlaştırma": [
+    "Oxunaqlı böyütmə",
+    "Zoom legible",
+    "Удобный масштаб",
+    "Readable zoom"
+  ],
+  "Fare tekerleği: yakınlaştır · Boşluk + sürükle: taşı · Sağ tık: X": [
+    "Siçan təkəri: böyüt · Boşluq + sürüklə: daşı · Sağ klik: X",
+    "Rueda: zoom · Espacio + arrastrar: mover · Clic derecho: X",
+    "Колесо: масштаб · Пробел + перетаскивание: перемещение · Правая кнопка: X",
+    "Mouse wheel: zoom · Space + drag: pan · Right-click: X"
+  ]
+}

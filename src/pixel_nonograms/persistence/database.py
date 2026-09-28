@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from pixel_nonograms.core.items import HelperItemId
+from pixel_nonograms.core.progression import MISSION_REWARDS, MISSIONS, mission_count
 
 from .migrations import SCHEMA_VERSION, migrate
 
@@ -51,6 +52,8 @@ class Database:
                 with sqlite3.connect(backup_path) as backup:
                     self.connection.backup(backup)
             migrate(self.connection)
+            with self.connection:
+                self._award_milestones()
         except Exception:
             self.connection.close()
             raise
@@ -125,15 +128,13 @@ class Database:
         *,
         reward_item_id: HelperItemId | None = None,
         consume_item_id: HelperItemId | None = None,
+        colored: bool = False,
     ) -> None:
         if reward_item_id is not None:
             reward_item_id = HelperItemId(reward_item_id)
         if consume_item_id is not None:
             consume_item_id = HelperItemId(consume_item_id)
         with self.connection:
-            prior = self.connection.execute(
-                "SELECT completed FROM progress WHERE puzzle_id = ?", (record.puzzle_id,)
-            ).fetchone()
             if consume_item_id is not None:
                 changed = self.connection.execute(
                     "UPDATE inventory SET quantity = quantity - 1 "
@@ -185,7 +186,14 @@ class Database:
                     record.crossed_clues,
                 ),
             )
-            if record.completed and reward_item_id is not None and not (prior and prior[0]):
+            if record.completed:
+                self.connection.execute(
+                    "INSERT INTO completions VALUES (?, ?, ?) "
+                    "ON CONFLICT(puzzle_id) DO UPDATE SET colored = MAX(colored, excluded.colored)",
+                    (record.puzzle_id, int(colored), record.saved_at),
+                )
+                self._award_milestones()
+            if record.completed and reward_item_id is not None:
                 claimed = self.connection.execute(
                     "INSERT OR IGNORE INTO reward_claims(puzzle_id, item_id, claimed_at) "
                     "VALUES (?, ?, ?)",
@@ -197,3 +205,77 @@ class Database:
                         "ON CONFLICT(item_id) DO UPDATE SET quantity = quantity + 1",
                         (reward_item_id.value,),
                     )
+
+    def completion_history(self) -> dict[str, bool]:
+        return {row[0]: bool(row[1]) for row in self.connection.execute(
+            "SELECT puzzle_id, colored FROM completions"
+        )}
+
+    def milestone_ids(self) -> frozenset[str]:
+        return frozenset(row[0] for row in self.connection.execute(
+            "SELECT mission_id FROM milestone_claims"
+        ))
+
+    def _award_milestones(self) -> None:
+        history = self.completion_history()
+        for mission in MISSIONS:
+            if mission_count(mission, history) >= mission.target:
+                self.connection.execute(
+                    "INSERT OR IGNORE INTO milestone_claims VALUES (?, ?)",
+                    (mission.id, datetime.now(timezone.utc).isoformat()),
+                )
+
+        for mission_id in self.milestone_ids():
+            pack = MISSION_REWARDS.get(mission_id, ())
+            if not pack:
+                continue
+            claimed = self.connection.execute(
+                "INSERT OR IGNORE INTO mission_reward_claims VALUES (?, ?)",
+                (mission_id, datetime.now(timezone.utc).isoformat()),
+            ).rowcount
+            if claimed:
+                for item, quantity in pack:
+                    self.connection.execute(
+                        "INSERT INTO inventory VALUES (?, ?) "
+                        "ON CONFLICT(item_id) DO UPDATE SET quantity = quantity + excluded.quantity",
+                        (item, quantity),
+                    )
+
+    def grant_missing_puzzle_rewards(self, puzzles) -> None:
+        """Backfill only recorded completions; existing claims remain authoritative."""
+        history = self.completion_history()
+        with self.connection:
+            for puzzle in puzzles:
+                if puzzle.id not in history:
+                    continue
+                item = puzzle.reward_item_id or HelperItemId.LOGIC_HINT
+                changed = self.connection.execute(
+                    "INSERT OR IGNORE INTO reward_claims VALUES (?, ?, ?)",
+                    (puzzle.id, item.value, datetime.now(timezone.utc).isoformat()),
+                ).rowcount
+                if changed:
+                    self.connection.execute(
+                        "INSERT INTO inventory VALUES (?, 1) "
+                        "ON CONFLICT(item_id) DO UPDATE SET quantity = quantity + 1", (item.value,)
+                    )
+
+    def selected_badge(self) -> str | None:
+        return self.connection.execute(
+            "SELECT badge_id FROM player_profile WHERE id = 1"
+        ).fetchone()[0]
+
+    def select_badge(self, badge_id: str | None) -> None:
+        if badge_id is not None and badge_id not in self.milestone_ids():
+            raise ValueError("Bu rozet henüz açılmadı")
+        with self.connection:
+            self.connection.execute(
+                "UPDATE player_profile SET badge_id = ? WHERE id = 1", (badge_id,)
+            )
+
+    def mark_completed_color(self, puzzle_id: str) -> None:
+        # Used only for validated old saves whose palette was not stored in v5.
+        with self.connection:
+            self.connection.execute(
+                "UPDATE completions SET colored = 1 WHERE puzzle_id = ?", (puzzle_id,)
+            )
+            self._award_milestones()

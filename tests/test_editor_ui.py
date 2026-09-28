@@ -100,7 +100,6 @@ def test_editor_save_feedback_and_library_play(app, tmp_path):
     screen.back_button.click()
     assert window.editor_screen is None
     assert any(card.entry.puzzle.id == puzzle.id for card in window.collection.cards)
-    assert window.collection.size_combo.findData("2x2") >= 0
     window.open_puzzle(puzzle.id)
     assert window.game_screen.session.puzzle.id == puzzle.id
     window.game_screen.back_button.click()
@@ -158,4 +157,19 @@ def test_image_import_is_editable_and_can_be_saved(app, tmp_path):
     screen.save_button.click()
     assert screen.last_result.status is SolveStatus.SOLVED
     assert screen.last_result.path.exists()
+    screen.close()
+
+
+def test_quality_report_is_separate_and_invalidated(app, tmp_path):
+    screen = EditorScreen(tmp_path)
+    screen.width_box.setValue(1)
+    screen.height_box.setValue(1)
+    screen.draft.set_cell(0, 0, 1)
+    screen.analyze_quality()
+    assert 'Tahminsiz' in screen.quality_label.text()
+    screen.save()
+    assert 'Tek çözüm' in screen.status_label.text()
+    assert 'Tahminsiz' in screen.quality_label.text()
+    screen._on_grid_changed()
+    assert 'yenileyin' in screen.quality_label.text()
     screen.close()

@@ -1,10 +1,13 @@
 """Offline puzzle catalog, progress summaries, and query rules."""
 
-from dataclasses import dataclass
+import json
+from dataclasses import dataclass, replace
 from datetime import datetime
 from enum import StrEnum
+from pathlib import Path
 
-from pixel_nonograms.core import CellState, Difficulty, Puzzle
+from pixel_nonograms.core import CellMark, CellState, Difficulty, Puzzle
+from pixel_nonograms.core.compact import compact_puzzle
 from pixel_nonograms.persistence import Database, SaveManager
 
 DIFFICULTY_LABELS = {
@@ -45,7 +48,7 @@ class PuzzleQuery:
     color_mode: str = "all"
     status: PuzzleStatus | None = None
     favorites_only: bool = False
-    sort: PuzzleSort = PuzzleSort.NAME
+    sort: PuzzleSort = PuzzleSort.SIZE
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +60,7 @@ class PuzzleEntry:
     favorite: bool
     error: str | None = None
     reward_claimed: bool = False
+    preview_cells: tuple[tuple[CellMark, ...], ...] | None = None
 
 
 class PuzzleLibrary:
@@ -67,9 +71,22 @@ class PuzzleLibrary:
             raise ValueError("Kütüphane en az bir geçerli bulmaca içermeli")
         if len({puzzle.id for puzzle in puzzles}) != len(puzzles):
             raise ValueError("Bulmaca kimlikleri benzersiz olmalı")
+        for original in puzzles:
+            save_manager.register_original(original)
+        puzzles = tuple(compact_puzzle(puzzle)[0] for puzzle in puzzles)
         self._puzzles = {puzzle.id: puzzle for puzzle in puzzles}
         self.save_manager = save_manager
         self.database = database
+        database.grant_missing_puzzle_rewards(puzzles)
+        history = database.completion_history()
+        for puzzle in puzzles:
+            if len(puzzle.palette) > 1 and puzzle.id in history and not history[puzzle.id]:
+                try:
+                    saved = save_manager.load(puzzle)
+                except ValueError:
+                    continue
+                if saved is not None and saved.completed:
+                    database.mark_completed_color(puzzle.id)
 
     @property
     def puzzles(self) -> tuple[Puzzle, ...]:
@@ -83,7 +100,8 @@ class PuzzleLibrary:
             raise TypeError("Puzzle gerekli")
         if puzzle.id in self._puzzles:
             raise ValueError("Bulmaca kimliği zaten kütüphanede")
-        self._puzzles[puzzle.id] = puzzle
+        self.save_manager.register_original(puzzle)
+        self._puzzles[puzzle.id] = compact_puzzle(puzzle)[0]
 
     def set_favorite(self, puzzle_id: str, favorite: bool) -> None:
         self.get(puzzle_id)
@@ -141,16 +159,21 @@ class PuzzleLibrary:
                     session.last_played_at if started or session.completed else None,
                     puzzle.id in favorites,
                     reward_claimed=reward_claimed,
+                    preview_cells=session.cells,
                 )
             )
         return tuple(result)
 
     def query(self, query: PuzzleQuery = PuzzleQuery()) -> tuple[PuzzleEntry, ...]:
+        return self.filter_entries(self.entries(), query)
+
+    @staticmethod
+    def filter_entries(entries: tuple[PuzzleEntry, ...], query: PuzzleQuery) -> tuple[PuzzleEntry, ...]:
         if type(query) is not PuzzleQuery or query.category not in CATEGORIES:
             raise ValueError("Geçersiz kütüphane sorgusu")
         if query.color_mode not in {"all", "color", "mono"}:
             raise ValueError("Geçersiz renk filtresi")
-        entries = [entry for entry in self.entries() if _matches(entry, query)]
+        entries = [entry for entry in entries if _matches(entry, query)]
         return tuple(sorted(entries, key=lambda entry: _sort_key(entry, query.sort)))
 
 
@@ -424,9 +447,44 @@ def built_in_puzzles() -> tuple[Puzzle, ...]:
         "buyuk-cicek-50-01", "Büyük Çiçek", Difficulty.EXPERT,
         flower
     )
-    return (
-        first, diamond, heart,
+    flower_easy = _from_rows(
+        "renkli-cicek-05-01", "Minik Çiçek", Difficulty.EASY,
+        (".111.", "11211", ".111.", "..3..", ".333."),
+        palette=("#C64E68", "#E2AD36", "#38876A"),
+        tags=("başlangıç", "renkli"), reward_item_id="logic_hint",
+    )
+    house_easy = _from_rows(
+        "renkli-ev-07-01", "Renkli Ev", Difficulty.EASY,
+        ("...1...", "..111..", ".11111.", "1111111", ".22222.", ".23332.", ".23332."),
+        palette=("#C56243", "#E0B65C", "#427FA0"),
+        tags=("başlangıç", "renkli"), reward_item_id="row_scanner",
+    )
+    original = (
+        first, diamond, heart, flower_easy, house_easy,
         color, medium, cappadocia,
         hard, hard_sail, hard_castle,
         expert, expert_star, expert_flower,
     )
+    records = json.loads(
+        (Path(__file__).resolve().parents[1] / "catalog_expansion.json").read_text(encoding="utf-8")
+    )
+    records += json.loads(
+        (Path(__file__).resolve().parents[1] / "catalog_extended.json").read_text(encoding="utf-8")
+    )
+    additions = tuple(
+        _from_rows(record["id"], record["title"], Difficulty(record["difficulty"]),
+                   tuple(record["rows"]), palette=tuple(record["palette"]))
+        for record in records
+    )
+    packaged = []
+    for puzzle in original + additions:
+        size = 10 if puzzle.difficulty is Difficulty.EASY and puzzle.width == 7 else puzzle.width
+        solution = tuple(
+            tuple(puzzle.solution[y][x] if y < puzzle.height and x < puzzle.width else 0
+                  for x in range(size)) for y in range(size)
+        )
+        packaged.append(replace(
+            puzzle, width=size, height=size, solution=solution,
+            row_clues=None, column_clues=None, tags=(*puzzle.tags, "packaged-grid"),
+        ))
+    return tuple(packaged)

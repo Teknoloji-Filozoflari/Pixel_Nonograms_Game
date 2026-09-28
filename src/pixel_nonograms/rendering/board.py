@@ -4,7 +4,6 @@ from PySide6.QtCore import QPointF, QRectF, Qt, Signal
 from PySide6.QtGui import (
     QColor,
     QFont,
-    QFontMetricsF,
     QImage,
     QMouseEvent,
     QPainter,
@@ -14,7 +13,8 @@ from PySide6.QtGui import (
 from PySide6.QtWidgets import QWidget
 
 from pixel_nonograms.core import CellState, GameSession, analyze_board
-from pixel_nonograms.ui.theme import BOARD, CLUE, INK, PAPER
+from pixel_nonograms.services.inventory import AREA_SIZES
+from pixel_nonograms.ui.theme import contrasting_ink, theme_color
 
 from .camera import Camera
 
@@ -36,8 +36,11 @@ def _stroke_cells(start: tuple[int, int], end: tuple[int, int]):
 
 class BoardWidget(QWidget):
     session_changed = Signal()
+    area_target_selected = Signal(object, object)
+    line_target_selected = Signal(object, object)
     view_changed = Signal()
     active_clues_changed = Signal(str)
+    stroke_changed = Signal(str)
 
     def __init__(self, session: GameSession, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -46,11 +49,27 @@ class BoardWidget(QWidget):
         self.camera = Camera()
         self.tool = "fill"
         self.color_id = 1
+        self.note_symbol = ""
         self.hover: tuple[int, int] | None = None
         self._hint_row: int | None = None
         self._hint_column: int | None = None
         self._hint_cell: tuple[int, int] | None = None
+        self.corrected_cell: tuple[int, int] | None = None
+        self.area_helper = None
+        self.line_helper = False
+        self.auto_cross_clues = False
+        self.show_errors = True
+        self._stroke_erase_note = False
+        self.axis_lock = True
+        self.pin_clues = True
+        self.expanded_clues = False
+        self.fullscreen_clues = False
+        self.clue_font_size = 15
+        self._stroke_start = None
+        self._stroke_axis = None
+        self._stroke_seen: set[tuple[int, int]] = set()
         self._stroke_active = False
+        self._stroke_pointer = QPointF()
         self._stroke_tool = "fill"
         self._stroke_erase_fill = False
         self._last_cell: tuple[int, int] | None = None
@@ -66,40 +85,57 @@ class BoardWidget(QWidget):
         self.setMinimumSize(120, 120)
 
     def _display_dimensions(self) -> tuple[int, int]:
-        """Trim only unused trailing cells past the last complete five-cell block."""
-        puzzle = self.session.puzzle
-        cells = self.session.cells
-
-        def required_width() -> int:
-            return max(
-                (x + 1 for y in range(puzzle.height) for x in range(puzzle.width)
-                 if puzzle.solution[y][x] or cells[y][x].state is not CellState.UNKNOWN),
-                default=1,
-            )
-
-        def required_height() -> int:
-            return max(
-                (y + 1 for y in range(puzzle.height)
-                 if any(puzzle.solution[y])
-                 or any(mark.state is not CellState.UNKNOWN for mark in cells[y])),
-                default=1,
-            )
-
-        width = puzzle.width if puzzle.width <= 5 or puzzle.width % 5 == 0 else max(
-            (puzzle.width // 5) * 5, required_width()
-        )
-        height = puzzle.height if puzzle.height <= 5 or puzzle.height % 5 == 0 else max(
-            (puzzle.height // 5) * 5, required_height()
-        )
-        return width, height
+        return self.session.puzzle.width, self.session.puzzle.height
 
     def _clue_bands(self) -> tuple[float, float]:
         puzzle = self.session.puzzle
-        row_depth = max((len(clues) for clues in puzzle.row_clues[:self.display_height]), default=0)
-        column_depth = max((len(clues) for clues in puzzle.column_clues[:self.display_width]), default=0)
-        left = min(max(56, 18 + row_depth * 24), 180)
-        top = min(max(52, 18 + column_depth * 24), 140)
+        row_depth = max(
+            (len(clues) for clues in puzzle.row_clues[: self.display_height]), default=0
+        )
+        column_depth = max(
+            (len(clues) for clues in puzzle.column_clues[: self.display_width]), default=0
+        )
+        slot = self.clue_font_size + 9
+        if self.fullscreen_clues:
+            depth = max(2, row_depth, column_depth)
+            # Keep every number; use the full display instead of the normal band caps.
+            extent = 18 + depth * (self.clue_font_size + 5)
+            return (min(max(80, extent), max(80, self.width() * .42)),
+                    min(max(72, extent), max(72, self.height() * .42)))
+        left = min(max(56, 18 + row_depth * slot), 300 if self.expanded_clues else 180)
+        top = min(max(52, 18 + column_depth * slot), 240 if self.expanded_clues else 140)
+        # Reserve usable grid space even in a small window.
+        if self.expanded_clues:
+            left = min(left, max(56, self.width() * 0.45))
+            top = min(top, max(52, self.height() * 0.45))
         return left, top
+
+    def configure_view(self, *, pin_clues: bool, expanded_clues: bool, clue_font_size: int) -> None:
+        if type(clue_font_size) is not int or not 12 <= clue_font_size <= 24:
+            raise ValueError("İpucu yazısı 12–24 piksel olmalı")
+        self.finish_active_stroke()
+        old_view = self.grid_viewport()
+        logical_x = (
+            old_view.center().x() - old_view.left() - self.camera.pan_x
+        ) / self.camera.cell_size
+        logical_y = (
+            old_view.center().y() - old_view.top() - self.camera.pan_y
+        ) / self.camera.cell_size
+        self.pin_clues = bool(pin_clues)
+        self.expanded_clues = bool(expanded_clues)
+        self.clue_font_size = clue_font_size
+        self.row_clue_offset = self.column_clue_offset = 0
+        viewport = self.grid_viewport()
+        self.camera.pan_x = viewport.width() / 2 - logical_x * self.camera.cell_size
+        self.camera.pan_y = viewport.height() / 2 - logical_y * self.camera.cell_size
+        self.camera.constrain(viewport, self.display_width, self.display_height)
+        self.update()
+        self.view_changed.emit()
+
+    def readable_zoom(self) -> None:
+        """Make a clue fit its cell; the player can pan through the larger board."""
+        target = (self.clue_font_size + 4) / 0.58
+        self.zoom(max(1.0, target / self.camera.cell_size))
 
     def grid_viewport(self) -> QRectF:
         left, top = self._clue_bands()
@@ -113,16 +149,21 @@ class BoardWidget(QWidget):
     def zoom(self, factor: float, point: QPointF | None = None) -> None:
         viewport = self.grid_viewport()
         center = point or viewport.center()
-        self.camera.zoom_at(center, factor, viewport,
-                            self.display_width, self.display_height)
+        self.camera.zoom_at(center, factor, viewport, self.display_width, self.display_height)
         self.update()
         self.view_changed.emit()
 
     def set_tool(self, tool: str) -> None:
-        if tool not in {"fill", "empty", "clear", "pan"}:
+        if tool not in {"fill", "empty", "clear", "pan", "note"}:
             raise ValueError("Bilinmeyen araç")
         self.tool = tool
-        self.setCursor(Qt.CursorShape.OpenHandCursor if tool == "pan" else Qt.CursorShape.ArrowCursor)
+        self.area_helper = None
+        self.line_helper = False
+        self.set_hint_highlight()
+        self.update()
+        self.setCursor(
+            Qt.CursorShape.OpenHandCursor if tool == "pan" else Qt.CursorShape.ArrowCursor
+        )
 
     def set_color(self, color_id: int) -> None:
         if type(color_id) is not int or not 1 <= color_id <= len(self.session.puzzle.palette):
@@ -210,13 +251,17 @@ class BoardWidget(QWidget):
 
     def _clue_edges(self, viewport: QRectF) -> tuple[float, float]:
         return (
-            viewport.left() + max(0.0, self.camera.pan_x),
-            viewport.top() + max(0.0, self.camera.pan_y),
+            viewport.left()
+            + (max(0.0, self.camera.pan_x) if self.pin_clues else self.camera.pan_x),
+            viewport.top() + (max(0.0, self.camera.pan_y) if self.pin_clues else self.camera.pan_y),
         )
 
-    @staticmethod
-    def _clue_capacity(edge: float) -> int:
-        return max(2, int((edge - 8) // 20))
+    def _clue_capacity(self, edge: float) -> int:
+        if self.fullscreen_clues:
+            puzzle = self.session.puzzle
+            return max(2, max(map(len, puzzle.row_clues), default=0),
+                       max(map(len, puzzle.column_clues), default=0))
+        return max(2, int((edge - 8) // (self.clue_font_size + 5)))
 
     @staticmethod
     def _visible_clue_indices(count: int, capacity: int, offset: int) -> tuple[int, ...]:
@@ -255,7 +300,7 @@ class BoardWidget(QWidget):
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.fillRect(self.rect(), PAPER)
+        painter.fillRect(self.rect(), theme_color(self, "paper"))
         viewport = self.grid_viewport()
         row_edge, column_edge = self._clue_edges(viewport)
         row_band_left = row_edge - viewport.left()
@@ -269,44 +314,92 @@ class BoardWidget(QWidget):
             column_edge + self.display_height * self.camera.cell_size,
         )
         painter.fillRect(
-            QRectF(row_edge, column_band_top, board_right - row_edge, viewport.top()), CLUE
+            QRectF(row_edge, column_band_top, board_right - row_edge, viewport.top()),
+            theme_color(self, "clue"),
         )
         painter.fillRect(
-            QRectF(row_band_left, column_edge, viewport.left(), board_bottom - column_edge), CLUE
+            QRectF(row_band_left, column_edge, viewport.left(), board_bottom - column_edge),
+            theme_color(self, "clue"),
         )
-        painter.fillRect(QRectF(0, 0, viewport.left(), viewport.top()), QColor("#2B3039"))
+        painter.fillRect(QRectF(0, 0, viewport.left(), viewport.top()), theme_color(self, "panel"))
         self._paint_marked_overview(painter, viewport)
         self._paint_grid(painter, viewport)
         self._paint_clues(painter, viewport)
-        self._paint_overfilled_lines(painter, viewport)
+        self._paint_five_step_labels(painter, viewport)
+        if self.show_errors:
+            self._paint_overfilled_lines(painter, viewport)
+        if self.corrected_cell is not None:
+            x, y = self.corrected_cell
+            origin = self.camera.cell_origin(x, y, viewport)
+            painter.save()
+            painter.setClipRect(viewport)
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.setPen(QPen(QColor("#E04455"), 2))
+            painter.drawRect(QRectF(origin.x()+1, origin.y()+1,
+                                   self.camera.cell_size-2, self.camera.cell_size-2))
+            painter.restore()
+        self._paint_stroke_counter(painter)
         painter.end()
+
+    def _stroke_counter_rect(self, width: float) -> QRectF:
+        """Keep the small pointer badge visible at the board edges."""
+        x, y = self._stroke_pointer.x() + 16, self._stroke_pointer.y() + 18
+        if x + width > self.width() - 4:
+            x = self._stroke_pointer.x() - width - 12
+        if y + 24 > self.height() - 4:
+            y = self._stroke_pointer.y() - 36
+        return QRectF(max(4, min(x, self.width() - width - 4)),
+                      max(4, min(y, self.height() - 28)), width, 24)
+
+    def _paint_stroke_counter(self, painter: QPainter) -> None:
+        if not self._stroke_active or not self._stroke_seen:
+            return
+        if not QRectF(self.rect()).contains(self._stroke_pointer):
+            return
+        painter.save()
+        painter.setClipping(False)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        font = QFont("Segoe UI")
+        font.setPixelSize(12)
+        font.setBold(True)
+        painter.setFont(font)
+        text = str(len(self._stroke_seen))
+        rect = self._stroke_counter_rect(max(26, painter.fontMetrics().horizontalAdvance(text) + 14))
+        painter.setPen(QPen(theme_color(self, "accent"), 1))
+        painter.setBrush(theme_color(self, "panel"))
+        painter.drawRoundedRect(rect, 7, 7)
+        painter.setPen(theme_color(self, "text"))
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, text)
+        painter.restore()
 
     def _marked_overview_rect(self, viewport: QRectF) -> QRectF:
         """Keep the progress miniature inside the fixed top-left clue corner."""
         available_width = max(1.0, viewport.left() - 14)
         available_height = max(1.0, viewport.top() - 14)
-        scale = min(available_width / self.display_width,
-                    available_height / self.display_height)
+        scale = min(available_width / self.display_width, available_height / self.display_height)
         width, height = self.display_width * scale, self.display_height * scale
-        return QRectF((viewport.left() - width) / 2, (viewport.top() - height) / 2,
-                      width, height)
+        return QRectF((viewport.left() - width) / 2, (viewport.top() - height) / 2, width, height)
 
     def _paint_marked_overview(self, painter: QPainter, viewport: QRectF) -> None:
         """Show only the player's filled cells, never the hidden solution."""
         puzzle = self.session.puzzle
         image = QImage(self.display_width, self.display_height, QImage.Format.Format_RGB32)
-        image.fill(BOARD)
-        for y, row in enumerate(self.session.cells[:self.display_height]):
-            for x, mark in enumerate(row[:self.display_width]):
+        image.fill(theme_color(self, "board"))
+        for y, row in enumerate(self.session.cells[: self.display_height]):
+            for x, mark in enumerate(row[: self.display_width]):
                 if mark.state is CellState.FILLED:
-                    color = QColor(puzzle.palette[mark.color_id - 1]) if puzzle.is_colored else INK
+                    color = (
+                        QColor(puzzle.palette[mark.color_id - 1])
+                        if puzzle.is_colored
+                        else theme_color(self, "ink")
+                    )
                     image.setPixelColor(x, y, color)
         target = self._marked_overview_rect(viewport)
         painter.save()
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, False)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, False)
         painter.drawImage(target, image)
-        painter.setPen(QPen(QColor("#8F7955"), 1))
+        painter.setPen(QPen(theme_color(self, "accent"), 1))
         painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawRect(target)
         painter.restore()
@@ -314,16 +407,22 @@ class BoardWidget(QWidget):
     def _overfilled_lines(self) -> tuple[tuple[int, ...], tuple[int, ...]]:
         puzzle = self.session.puzzle
         cells = self.session.cells
-        rows = tuple(
-            y for y, row in enumerate(cells[:self.display_height])
-            if sum(mark.state is CellState.FILLED for mark in row)
-            > sum(clue.length for clue in puzzle.row_clues[y])
-        )
-        columns = tuple(
-            x for x in range(self.display_width)
-            if sum(cells[y][x].state is CellState.FILLED for y in range(self.display_height))
-            > sum(clue.length for clue in puzzle.column_clues[x])
-        )
+        def invalid(line, clues):
+            limits = {}
+            for clue in clues:
+                color = getattr(clue, "color_id", 1)
+                limits[color] = limits.get(color, 0) + clue.length
+            counts = {}
+            for mark in line:
+                if mark.state is CellState.FILLED:
+                    counts[mark.color_id] = counts.get(mark.color_id, 0) + 1
+            return any(count > limits.get(color, 0) for color, count in counts.items())
+
+        rows = tuple(y for y, row in enumerate(cells[:self.display_height])
+                     if invalid(row, puzzle.row_clues[y]))
+        columns = tuple(x for x in range(self.display_width)
+                        if invalid((cells[y][x] for y in range(self.display_height)),
+                                   puzzle.column_clues[x]))
         return rows, columns
 
     def _paint_overfilled_lines(self, painter: QPainter, viewport: QRectF) -> None:
@@ -333,7 +432,7 @@ class BoardWidget(QWidget):
         painter.save()
         painter.setClipRect(QRectF(0, 0, viewport.right(), viewport.bottom()))
         painter.setBrush(QColor(226, 63, 75, 38))
-        painter.setPen(QPen(QColor("#D63740"), 2.5))
+        painter.setPen(QPen(theme_color(self, "danger"), 2.5))
         for y in rows:
             painter.drawRect(self._warning_row_rect(y, viewport))
         for x in columns:
@@ -343,30 +442,36 @@ class BoardWidget(QWidget):
     def _warning_row_rect(self, y: int, viewport: QRectF) -> QRectF:
         row_edge, _ = self._clue_edges(viewport)
         capacity = self._clue_capacity(viewport.left())
-        slot = min(26.0, (viewport.left() - 8) / capacity)
+        slot = min(float(self.clue_font_size + 11), (viewport.left() - 8) / capacity)
         count = len(self.session.puzzle.row_clues[y])
         visible = self._visible_clue_indices(count, capacity, self.row_clue_offset)
         slots = max(1, len(visible) + int(count > len(visible)))
         left = max(row_edge - viewport.left(), row_edge - 8 - slots * slot)
         top = self.camera.cell_origin(0, y, viewport).y()
-        board_right = viewport.left() + self.camera.pan_x + self.display_width * self.camera.cell_size
+        board_right = (
+            viewport.left() + self.camera.pan_x + self.display_width * self.camera.cell_size
+        )
         right = min(viewport.right(), max(row_edge, board_right))
-        return QRectF(left + 2, top + 2, max(1, right - left - 4),
-                      max(1, self.camera.cell_size - 4))
+        return QRectF(
+            left + 2, top + 2, max(1, right - left - 4), max(1, self.camera.cell_size - 4)
+        )
 
     def _warning_column_rect(self, x: int, viewport: QRectF) -> QRectF:
         _, column_edge = self._clue_edges(viewport)
         capacity = self._clue_capacity(viewport.top())
-        slot = min(26.0, (viewport.top() - 8) / capacity)
+        slot = min(float(self.clue_font_size + 11), (viewport.top() - 8) / capacity)
         count = len(self.session.puzzle.column_clues[x])
         visible = self._visible_clue_indices(count, capacity, self.column_clue_offset)
         slots = max(1, len(visible) + int(count > len(visible)))
         top = max(column_edge - viewport.top(), column_edge - 8 - slots * slot)
         left = self.camera.cell_origin(x, 0, viewport).x()
-        board_bottom = viewport.top() + self.camera.pan_y + self.display_height * self.camera.cell_size
+        board_bottom = (
+            viewport.top() + self.camera.pan_y + self.display_height * self.camera.cell_size
+        )
         bottom = min(viewport.bottom(), max(column_edge, board_bottom))
-        return QRectF(left + 2, top + 2, max(1, self.camera.cell_size - 4),
-                      max(1, bottom - top - 4))
+        return QRectF(
+            left + 2, top + 2, max(1, self.camera.cell_size - 4), max(1, bottom - top - 4)
+        )
 
     def _paint_grid(self, painter: QPainter, viewport: QRectF) -> None:
         puzzle = self.session.puzzle
@@ -381,7 +486,7 @@ class BoardWidget(QWidget):
         painter.setClipRect(viewport)
         painter.fillRect(
             QRectF(board_left, board_top, self.display_width * size, self.display_height * size),
-            BOARD,
+            theme_color(self, "board"),
         )
         for y in range(y0, y1):
             for x in range(x0, x1):
@@ -391,10 +496,12 @@ class BoardWidget(QWidget):
                 if mark.state is CellState.FILLED:
                     painter.fillRect(
                         rect.adjusted(0.8, 0.8, -0.8, -0.8),
-                        QColor(puzzle.palette[mark.color_id - 1]) if puzzle.is_colored else INK,
+                        QColor(puzzle.palette[mark.color_id - 1])
+                        if puzzle.is_colored
+                        else theme_color(self, "ink"),
                     )
                 elif (x // 5 + y // 5) % 2:
-                    painter.fillRect(rect, QColor("#26313A"))
+                    painter.fillRect(rect, theme_color(self, "note"))
                 if self.hover is not None and (x == self.hover[0] or y == self.hover[1]):
                     painter.fillRect(rect, QColor(207, 169, 82, 32))
                 if y == self._hint_row or x == self._hint_column:
@@ -404,12 +511,39 @@ class BoardWidget(QWidget):
                         painter.fillRect(rect, QColor(245, 169, 48, 170))
                     else:
                         painter.fillRect(rect.adjusted(2, 2, -2, -2), QColor(245, 169, 48, 55))
-                        painter.setPen(QPen(QColor("#E4A43D"), max(1.5, size * 0.055)))
+                        painter.setPen(
+                            QPen(
+                                theme_color(self, "hint"),
+                                max(1.5, size * 0.055),
+                                Qt.PenStyle.DashLine,
+                            )
+                        )
                         painter.setBrush(Qt.BrushStyle.NoBrush)
                         painter.drawRect(rect.adjusted(2, 2, -2, -2))
+                if mark.note and size >= 7:
+                    painter.setPen(QPen(QColor("#586A80"), max(1.5, size * 0.04)))
+                    painter.setBrush(Qt.BrushStyle.NoBrush)
+                    if mark.note_symbol:
+                        font = QFont(self.font())
+                        font.setPixelSize(max(7, int(size * 0.58)))
+                        font.setBold(True)
+                        painter.setFont(font)
+                        if mark.note_symbol in ("←→", "↑↓"):
+                            for index, symbol in enumerate(mark.note_symbol):
+                                painter.setPen(QColor("#F04468" if index == 0 else "#8060FF"))
+                                part = (QRectF(rect.left(), rect.top() + index * size / 2, size, size / 2)
+                                        if mark.note_symbol == "←→" else
+                                        QRectF(rect.left() + index * size / 2, rect.top(), size / 2, size))
+                                font.setPixelSize(max(7, int(size * 0.44)))
+                                painter.setFont(font)
+                                painter.drawText(part, Qt.AlignmentFlag.AlignCenter, symbol)
+                        else:
+                            painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, mark.note_symbol)
+                    else:
+                        painter.drawEllipse(rect.center(), size * 0.13, size * 0.13)
                 if mark.state is CellState.EMPTY and size >= 10:
                     margin = max(3.0, size * 0.27)
-                    painter.setPen(QPen(QColor("#C5CFCC"), max(1.5, size * 0.065)))
+                    painter.setPen(QPen(theme_color(self, "cross"), max(1.5, size * 0.065)))
                     painter.drawLine(
                         rect.topLeft() + QPointF(margin, margin),
                         rect.bottomRight() - QPointF(margin, margin),
@@ -423,7 +557,7 @@ class BoardWidget(QWidget):
             point = camera.cell_origin(x, 0, viewport)
             painter.setPen(
                 QPen(
-                    QColor("#B79A69") if x % 5 == 0 else QColor("#68757B"),
+                    theme_color(self, "grid_major") if x % 5 == 0 else theme_color(self, "grid"),
                     1.8 if x % 5 == 0 else 0.7,
                 )
             )
@@ -432,12 +566,11 @@ class BoardWidget(QWidget):
             point = camera.cell_origin(0, y, viewport)
             painter.setPen(
                 QPen(
-                    QColor("#B79A69") if y % 5 == 0 else QColor("#68757B"),
+                    theme_color(self, "grid_major") if y % 5 == 0 else theme_color(self, "grid"),
                     1.8 if y % 5 == 0 else 0.7,
                 )
             )
             painter.drawLine(QPointF(board_left, point.y()), QPointF(board_right, point.y()))
-        self._paint_five_step_labels(painter, viewport, (x0, y0, x1, y1))
         painter.restore()
         if self.hover is not None:
             x, y = self.hover
@@ -445,59 +578,77 @@ class BoardWidget(QWidget):
                 origin = camera.cell_origin(x, y, viewport)
                 painter.save()
                 painter.setClipRect(viewport)
-                painter.setPen(QPen(QColor("#B68D44"), 2.5))
+                painter.setPen(QPen(theme_color(self, "accent"), 2.5))
                 painter.setBrush(Qt.BrushStyle.NoBrush)
                 painter.drawRect(QRectF(origin.x(), origin.y(), size, size).adjusted(1, 1, -1, -1))
                 painter.restore()
+        if self.area_helper is not None and self.hover is not None:
+            side = AREA_SIZES[self.area_helper]
+            w, h = min(side, puzzle.width), min(side, puzzle.height)
+            x, y = min(self.hover[0], puzzle.width-w), min(self.hover[1], puzzle.height-h)
+            origin = camera.cell_origin(x, y, viewport)
+            painter.save()
+            painter.setClipRect(viewport)
+            painter.setPen(QPen(theme_color(self, "accent"), 3))
+            painter.setBrush(QColor(207, 169, 82, 45))
+            painter.drawRect(QRectF(origin.x(), origin.y(), size*w, size*h))
+            painter.restore()
         if self._hint_cell is not None:
             x, y = self._hint_cell
             if x0 <= x < x1 and y0 <= y < y1:
                 origin = camera.cell_origin(x, y, viewport)
                 painter.save()
                 painter.setClipRect(viewport)
-                painter.setPen(QPen(QColor("#F6C35B"), 3))
+                painter.setPen(QPen(theme_color(self, "hint"), 3))
                 painter.setBrush(Qt.BrushStyle.NoBrush)
                 painter.drawRect(QRectF(origin.x(), origin.y(), size, size).adjusted(2, 2, -2, -2))
                 painter.restore()
 
-    def _paint_five_step_labels(
-        self, painter: QPainter, viewport: QRectF, visible: tuple[int, int, int, int]
-    ) -> None:
-        """Number every fifth row at the right edge and column at the bottom edge."""
+    def _five_step_labels(self, viewport: QRectF) -> tuple[tuple[str, int, QRectF], ...]:
         size = self.camera.cell_size
         if size < 7:
-            return
-        x0, y0, x1, y1 = visible
+            return ()
+        x0, y0, x1, y1 = self.camera.visible_cells(viewport, self.display_width, self.display_height)
+        labels = []
+        extent = min(18.0, size * 0.65)
+        def badge(x, y):
+            origin = self.camera.cell_origin(x, y, viewport)
+            return QRectF(origin.x() + size - extent - 1, origin.y() + size - extent - 1,
+                          extent, extent)
+        if x0 <= self.display_width - 1 < x1:
+            for number in range(5, self.display_height + 1, 5):
+                if y0 <= number - 1 < y1:
+                    labels.append(("row", number, badge(self.display_width - 1, number - 1)))
+        if y0 <= self.display_height - 1 < y1:
+            for number in range(5, self.display_width + 1, 5):
+                if x0 <= number - 1 < x1:
+                    rect = badge(number - 1, self.display_height - 1)
+                    if number == self.display_width and self.display_height % 5 == 0:
+                        if number == self.display_height:
+                            continue
+                        rect.translate(-extent, 0)
+                    labels.append(("column", number, rect))
+        return tuple(labels)
+
+    def _paint_five_step_labels(self, painter: QPainter, viewport: QRectF) -> None:
+        painter.save()
         font = QFont(self.font())
-        font.setPixelSize(max(5, min(13, int(size * 0.43))))
+        font.setPixelSize(max(5, min(11, int(self.camera.cell_size * 0.4))))
         font.setBold(True)
         painter.setFont(font)
-        metrics = QFontMetricsF(font)
-
-        def draw_label(x: int, y: int, number: int, *, top_left: bool = False) -> None:
-            origin = self.camera.cell_origin(x, y, viewport)
-            width = metrics.horizontalAdvance(str(number)) + (1 if size < 12 else 2)
-            height = metrics.height()
-            margin = 0.5 if size < 12 else 2
-            left = origin.x() + margin if top_left else origin.x() + size - width - margin
-            top = origin.y() + margin if top_left else origin.y() + size - height - margin
-            badge = QRectF(left, top, width, height)
-            painter.fillRect(badge, QColor(42, 50, 58, 235))
-            painter.setPen(QColor("#E8D7B8"))
-            painter.drawText(badge, Qt.AlignmentFlag.AlignCenter, str(number))
-
-        if x0 <= self.display_width - 1 < x1:
-            for count in range(5, self.display_height + 1, 5):
-                if y0 <= count - 1 < y1:
-                    draw_label(self.display_width - 1, count - 1, count)
-        if y0 <= self.display_height - 1 < y1:
-            for count in range(5, self.display_width + 1, 5):
-                if x0 <= count - 1 < x1:
-                    corner_overlap = count == self.display_width and self.display_height % 5 == 0
-                    if corner_overlap and self.display_width == self.display_height:
-                        continue
-                    draw_label(count - 1, self.display_height - 1, count,
-                               top_left=corner_overlap)
+        painter.setPen(QColor("#65758B"))
+        painter.setClipRect(viewport)
+        for _axis, number, rect in self._five_step_labels(viewport):
+            cell = self._cell_at(rect.center())
+            mark = self.session.cell_at(*cell) if cell else None
+            ink = QColor("#65758B")
+            if mark and mark.state is CellState.FILLED:
+                background = (QColor(self.session.puzzle.palette[mark.color_id - 1])
+                              if self.session.puzzle.is_colored else theme_color(self, "ink"))
+                ink = contrasting_ink(background)
+            painter.setPen(ink)
+            painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, str(number))
+        painter.restore()
 
     def _paint_clues(self, painter: QPainter, viewport: QRectF) -> None:
         puzzle = self.session.puzzle
@@ -508,16 +659,21 @@ class BoardWidget(QWidget):
         column_band_top = column_edge - viewport.top()
         row_capacity = self._clue_capacity(viewport.left())
         column_capacity = self._clue_capacity(viewport.top())
-        row_slot = min(26.0, (viewport.left() - 8) / row_capacity)
-        col_slot = min(26.0, (viewport.top() - 8) / column_capacity)
+        row_slot = min(float(self.clue_font_size + 11), (viewport.left() - 8) / row_capacity)
+        col_slot = min(float(self.clue_font_size + 11), (viewport.top() - 8) / column_capacity)
         font = QFont(self.font())
-        font.setPixelSize(max(7, min(15, int(size * 0.58))))
+        font.setPixelSize(max(7, min(self.clue_font_size, int(size * 0.58))))
+        if self.fullscreen_clues:
+            font.setPixelSize(max(7, min(self.clue_font_size, int(size * .72),
+                                         int(min(row_slot, col_slot) * .72))))
         font.setBold(True)
         painter.setFont(font)
         x0, y0, x1, y1 = camera.visible_cells(viewport, self.display_width, self.display_height)
 
         painter.save()
-        painter.setClipRect(QRectF(row_band_left, viewport.top(), viewport.left(), viewport.height()))
+        painter.setClipRect(
+            QRectF(row_band_left, viewport.top(), viewport.left(), viewport.height())
+        )
         for y in range(y0, y1):
             row_top = camera.cell_origin(0, y, viewport).y()
             cy = row_top + size / 2
@@ -526,7 +682,7 @@ class BoardWidget(QWidget):
                 painter.fillRect(row_area, QColor(202, 164, 73, 36))
             if self._hint_row == y:
                 painter.fillRect(row_area, QColor(216, 157, 48, 75))
-            painter.setPen(QPen(QColor("#7B797A"), 0.6))
+            painter.setPen(QPen(theme_color(self, "border"), 0.6))
             painter.drawLine(
                 QPointF(row_band_left, row_top + size), QPointF(row_edge, row_top + size)
             )
@@ -540,11 +696,14 @@ class BoardWidget(QWidget):
                     painter,
                     QRectF(x - row_slot / 2, cy - size / 2, row_slot, size),
                     clue,
-                    self.session.is_clue_crossed("row", y, clue_index),
+                    self.session.is_clue_crossed("row", y, clue_index)
+                    or (
+                        self.auto_cross_clues and self._analysis.rows[y].completed_clues[clue_index]
+                    ),
                 )
             if len(puzzle.row_clues[y]) > len(indices):
                 marker_x = row_edge - 8 - (row_capacity - 0.5) * row_slot
-                painter.setPen(QColor("#C4B69B"))
+                painter.setPen(theme_color(self, "muted"))
                 painter.drawText(
                     QRectF(marker_x - row_slot / 2, cy - size / 2, row_slot, size),
                     Qt.AlignmentFlag.AlignCenter,
@@ -564,7 +723,7 @@ class BoardWidget(QWidget):
                 painter.fillRect(column_area, QColor(202, 164, 73, 36))
             if self._hint_column == x:
                 painter.fillRect(column_area, QColor(216, 157, 48, 75))
-            painter.setPen(QPen(QColor("#7B797A"), 0.6))
+            painter.setPen(QPen(theme_color(self, "border"), 0.6))
             painter.drawLine(
                 QPointF(column_left + size, column_band_top),
                 QPointF(column_left + size, column_edge),
@@ -579,11 +738,15 @@ class BoardWidget(QWidget):
                     painter,
                     QRectF(cx - size / 2, y - col_slot / 2, size, col_slot),
                     clue,
-                    self.session.is_clue_crossed("column", x, clue_index),
+                    self.session.is_clue_crossed("column", x, clue_index)
+                    or (
+                        self.auto_cross_clues
+                        and self._analysis.columns[x].completed_clues[clue_index]
+                    ),
                 )
             if len(puzzle.column_clues[x]) > len(indices):
                 marker_y = column_edge - 8 - (column_capacity - 0.5) * col_slot
-                painter.setPen(QColor("#C4B69B"))
+                painter.setPen(theme_color(self, "muted"))
                 painter.drawText(
                     QRectF(cx - size / 2, marker_y - col_slot / 2, size, col_slot),
                     Qt.AlignmentFlag.AlignCenter,
@@ -602,16 +765,16 @@ class BoardWidget(QWidget):
             color = QColor(self.session.puzzle.palette[clue.color_id - 1])
             badge = rect.adjusted(2, 2, -2, -2)
             painter.fillRect(badge, color)
-            brightness = (color.red() * 299 + color.green() * 587 + color.blue() * 114) / 1000
-            painter.setPen(QColor("#282822") if brightness > 145 else QColor("#FFFFFF"))
+            painter.setPen(contrasting_ink(color))
         else:
-            painter.setPen(INK)
+            painter.setPen(theme_color(self, "ink"))
         painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, str(clue.length))
         painter.restore()
 
     def _cell_at(self, point: QPointF) -> tuple[int, int] | None:
-        return self.camera.screen_to_cell(point, self.grid_viewport(),
-                                          self.display_width, self.display_height)
+        return self.camera.screen_to_cell(
+            point, self.grid_viewport(), self.display_width, self.display_height
+        )
 
     def _clue_at(self, point: QPointF) -> tuple[str, int, int] | None:
         puzzle = self.session.puzzle
@@ -623,35 +786,56 @@ class BoardWidget(QWidget):
         )
         if 0 <= point.x() < row_edge and viewport.top() <= point.y() < viewport.bottom():
             capacity = self._clue_capacity(viewport.left())
-            slot = min(26.0, (viewport.left() - 8) / capacity)
+            slot = min(float(self.clue_font_size + 11), (viewport.left() - 8) / capacity)
             for y in range(y0, y1):
                 top = self.camera.cell_origin(0, y, viewport).y()
-                for offset, index in enumerate(self._visible_clue_indices(
-                    len(puzzle.row_clues[y]), capacity, self.row_clue_offset
-                )):
+                for offset, index in enumerate(
+                    self._visible_clue_indices(
+                        len(puzzle.row_clues[y]), capacity, self.row_clue_offset
+                    )
+                ):
                     center = row_edge - 8 - (offset + 0.5) * slot
                     if QRectF(center - slot / 2, top, slot, size).contains(point):
                         return "row", y, index
         if viewport.left() <= point.x() < viewport.right() and 0 <= point.y() < column_edge:
             capacity = self._clue_capacity(viewport.top())
-            slot = min(26.0, (viewport.top() - 8) / capacity)
+            slot = min(float(self.clue_font_size + 11), (viewport.top() - 8) / capacity)
             for x in range(x0, x1):
                 left = self.camera.cell_origin(x, 0, viewport).x()
-                for offset, index in enumerate(self._visible_clue_indices(
-                    len(puzzle.column_clues[x]), capacity, self.column_clue_offset
-                )):
+                for offset, index in enumerate(
+                    self._visible_clue_indices(
+                        len(puzzle.column_clues[x]), capacity, self.column_clue_offset
+                    )
+                ):
                     center = column_edge - 8 - (offset + 0.5) * slot
                     if QRectF(left, center - slot / 2, size, slot).contains(point):
                         return "column", x, index
         return None
 
     def _apply_at(self, point: QPointF) -> None:
+        self._stroke_pointer = QPointF(point)
+        self.update()
         cell = self._cell_at(point)
         if cell is None:
-            self._last_cell = None
+            if not self.axis_lock:
+                self._last_cell = None
             return
+        if self._stroke_start is None:
+            self._stroke_start = cell
+        if self.axis_lock:
+            start_x, start_y = self._stroke_start
+            dx, dy = cell[0] - start_x, cell[1] - start_y
+            if self._stroke_axis is None and (dx or dy):
+                self._stroke_axis = "row" if abs(dx) >= abs(dy) else "column"
+            if self._stroke_axis == "row":
+                cell = (cell[0], start_y)
+            elif self._stroke_axis == "column":
+                cell = (start_x, cell[1])
         previous = self._last_cell or cell
         for x, y in _stroke_cells(previous, cell):
+            if (x, y) in self._stroke_seen:
+                continue
+            self._stroke_seen.add((x, y))
             if self._stroke_tool == "fill":
                 if self._stroke_erase_fill:
                     mark = self.session.cell_at(x, y)
@@ -659,11 +843,17 @@ class BoardWidget(QWidget):
                         self.session.clear_cell(x, y)
                 else:
                     self.session.fill_cell(x, y, self.color_id)
+            elif self._stroke_tool == "note":
+                self.session.mark_note(x, y, not self._stroke_erase_note, symbol=self.note_symbol)
             elif self._stroke_tool == "empty":
                 self.session.mark_empty(x, y)
             else:
                 self.session.clear_cell(x, y)
         self._last_cell = cell
+        direction = {"row": "Yatay", "column": "Dikey"}.get(
+            self._stroke_axis, "Serbest" if not self.axis_lock else "Çizim"
+        )
+        self.stroke_changed.emit(f"{direction} · {len(self._stroke_seen)} hücre")
         self.update()
 
     def _finish_stroke(self) -> None:
@@ -671,12 +861,43 @@ class BoardWidget(QWidget):
             return
         self._stroke_active = False
         self._last_cell = None
+        self._stroke_start = None
+        self._stroke_axis = None
+        self._stroke_seen.clear()
+        self.stroke_changed.emit("")
+        self.update()
         if self.session.end_stroke() is not None:
             self._refresh_clue_analysis()
             self.session_changed.emit()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
+        self.corrected_cell = None
         self.setFocus()
+        if self.line_helper:
+            if event.button() == Qt.MouseButton.RightButton:
+                self.line_helper = False
+                self.set_hint_highlight()
+                return
+            if event.button() == Qt.MouseButton.LeftButton and not self._space_down:
+                clue = self._clue_at(event.position())
+                if clue is not None:
+                    self.line_helper = False
+                    self.set_hint_highlight()
+                    self.line_target_selected.emit(clue[0], clue[1])
+                return
+        if self.area_helper is not None:
+            if event.button() == Qt.MouseButton.RightButton:
+                self.area_helper = None
+                self.update()
+                return
+            if event.button() == Qt.MouseButton.LeftButton and not self._space_down:
+                cell = self._cell_at(event.position())
+                if cell is not None:
+                    item_id = self.area_helper
+                    self.area_helper = None
+                    self.area_target_selected.emit(item_id, cell)
+                    self.update()
+                return
         if event.button() == Qt.MouseButton.MiddleButton or (
             event.button() == Qt.MouseButton.LeftButton and (self._space_down or self.tool == "pan")
         ):
@@ -689,6 +910,7 @@ class BoardWidget(QWidget):
                 if clue is not None:
                     if not self.session.assumption_active:
                         self.session.toggle_clue(*clue)
+                        self._refresh_clue_analysis()
                         self.update()
                         self.session_changed.emit()
                     return
@@ -696,12 +918,21 @@ class BoardWidget(QWidget):
                 "empty" if event.button() == Qt.MouseButton.RightButton else self.tool
             )
             cell = self._cell_at(event.position())
+            self._stroke_erase_note = (
+                cell is not None and self.session.cell_at(*cell).note
+                and self.session.cell_at(*cell).note_symbol == self.note_symbol
+            )
             self._stroke_erase_fill = (
                 self._stroke_tool == "fill"
                 and cell is not None
                 and self.session.cell_at(*cell).state is CellState.FILLED
                 and self.session.cell_at(*cell).color_id == self.color_id
             )
+            if cell is None:
+                return
+            self._stroke_start = cell
+            self._stroke_axis = None
+            self._stroke_seen.clear()
             self.session.begin_stroke()
             self._stroke_active = True
             self._last_cell = None
@@ -710,6 +941,12 @@ class BoardWidget(QWidget):
             super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        if self.line_helper:
+            clue = self._clue_at(event.position())
+            self.set_hint_highlight(
+                row=clue[1] if clue and clue[0] == "row" else None,
+                column=clue[1] if clue and clue[0] == "column" else None,
+            )
         if self._pan_active:
             delta = event.position() - self._pan_anchor
             self._pan_anchor = event.position()
@@ -720,7 +957,7 @@ class BoardWidget(QWidget):
             self.view_changed.emit()
         elif self._stroke_active:
             self._apply_at(event.position())
-        cell = self._cell_at(event.position())
+        cell = self._last_cell if self._stroke_active else self._cell_at(event.position())
         if cell != self.hover:
             self.hover = cell
             self.active_clues_changed.emit(self._active_clue_text())
@@ -730,14 +967,17 @@ class BoardWidget(QWidget):
         if self._pan_active:
             self._pan_active = False
             self.setCursor(
-                Qt.CursorShape.OpenHandCursor
-                if self.tool == "pan" else Qt.CursorShape.ArrowCursor
+                Qt.CursorShape.OpenHandCursor if self.tool == "pan" else Qt.CursorShape.ArrowCursor
             )
         if self._stroke_active:
+            self._apply_at(event.position())
             self._finish_stroke()
         self.update()
 
     def wheelEvent(self, event: QWheelEvent) -> None:
+        if self._stroke_active:
+            event.accept()
+            return
         steps = event.angleDelta().y() / 120
         if not steps:
             event.accept()
@@ -771,6 +1011,16 @@ class BoardWidget(QWidget):
         event.accept()
 
     def keyPressEvent(self, event) -> None:
+        if event.key() == Qt.Key.Key_Escape and self.line_helper:
+            self.line_helper = False
+            self.set_hint_highlight()
+            event.accept()
+            return
+        if event.key() == Qt.Key.Key_Escape and self.area_helper is not None:
+            self.area_helper = None
+            self.update()
+            event.accept()
+            return
         if event.key() == Qt.Key.Key_Space and not event.isAutoRepeat():
             self._space_down = True
             self.setCursor(Qt.CursorShape.OpenHandCursor)
@@ -785,8 +1035,7 @@ class BoardWidget(QWidget):
         if event.key() == Qt.Key.Key_Space and not event.isAutoRepeat():
             self._space_down = False
             self.setCursor(
-                Qt.CursorShape.OpenHandCursor
-                if self.tool == "pan" else Qt.CursorShape.ArrowCursor
+                Qt.CursorShape.OpenHandCursor if self.tool == "pan" else Qt.CursorShape.ArrowCursor
             )
             event.accept()
         else:

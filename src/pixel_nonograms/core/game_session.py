@@ -25,6 +25,7 @@ class GameSession:
             raise TypeError("Otomatik X ayarı bool olmalı")
         self.puzzle = puzzle
         self.auto_x_completed_lines = auto_x_completed_lines
+        self.auto_x_crossed_lines = True
         self._cells = [[CellMark() for _ in range(puzzle.width)] for _ in range(puzzle.height)]
         self._crossed_clues: set[tuple[str, int, int]] = set()
         self._undo_stack: list[Command] = []
@@ -101,19 +102,23 @@ class GameSession:
             raise ValueError("Kayıtta geçersiz tarih var")
         if type(snapshot.completed) is not bool:
             raise ValueError("Kayıtta geçersiz tamamlanma durumu var")
-        if type(snapshot.crossed_clues) is not tuple or any(
-            type(key) is not tuple
-            or len(key) != 3
-            or type(key[0]) is not str
-            or type(key[1]) is not int
-            or type(key[2]) is not int
-            or key[0] not in {"row", "column"}
-            or not 0 <= key[1] < (puzzle.height if key[0] == "row" else puzzle.width)
-            or not 0 <= key[2] < len(
-                puzzle.row_clues[key[1]] if key[0] == "row" else puzzle.column_clues[key[1]]
+        if (
+            type(snapshot.crossed_clues) is not tuple
+            or any(
+                type(key) is not tuple
+                or len(key) != 3
+                or type(key[0]) is not str
+                or type(key[1]) is not int
+                or type(key[2]) is not int
+                or key[0] not in {"row", "column"}
+                or not 0 <= key[1] < (puzzle.height if key[0] == "row" else puzzle.width)
+                or not 0
+                <= key[2]
+                < len(puzzle.row_clues[key[1]] if key[0] == "row" else puzzle.column_clues[key[1]])
+                for key in snapshot.crossed_clues
             )
-            for key in snapshot.crossed_clues
-        ) or len(set(snapshot.crossed_clues)) != len(snapshot.crossed_clues):
+            or len(set(snapshot.crossed_clues)) != len(snapshot.crossed_clues)
+        ):
             raise ValueError("Kayıttaki ipucu işaretleri geçersiz")
         session = cls(puzzle)
         session._cells = [list(row) for row in snapshot.cells]
@@ -151,17 +156,29 @@ class GameSession:
             index == clue_index or (axis, line_index, index) in self._crossed_clues
             for index in range(len(clues))
         )
-        if before or closing_line:
+        if before or (closing_line and self.auto_x_crossed_lines):
+            source = 1 if axis == "row" else 2
             positions = (
                 ((x, line_index) for x in range(self.puzzle.width))
                 if axis == "row"
                 else ((line_index, y) for y in range(self.puzzle.height))
             )
             for x, y in positions:
-                before_cell = self._cells[y][x]
-                target = CellMark() if before else CellMark(CellState.EMPTY)
-                if before_cell.state is (CellState.EMPTY if before else CellState.UNKNOWN):
-                    changes.append(CellChangeCommand(x, y, before_cell, target))
+                original = self._cells[y][x]
+                target = original
+                if before and original.auto_sources & source:
+                    remaining = original.auto_sources & ~source
+                    target = (
+                        CellMark(CellState.EMPTY, auto_sources=remaining)
+                        if remaining
+                        else CellMark()
+                    )
+                elif not before and original.state is CellState.UNKNOWN:
+                    target = CellMark(CellState.EMPTY, auto_sources=source)
+                elif not before and original.auto_sources:
+                    target = CellMark(CellState.EMPTY, auto_sources=original.auto_sources | source)
+                if target != original:
+                    changes.append(CellChangeCommand(x, y, original, target))
                     self._cells[y][x] = target
         if before:
             self._crossed_clues.remove(key)
@@ -177,7 +194,11 @@ class GameSession:
             raise ValueError("İpucu koordinatı geçersiz")
         if not 0 <= line_index < (self.puzzle.height if axis == "row" else self.puzzle.width):
             raise ValueError("İpucu koordinatı geçersiz")
-        clues = self.puzzle.row_clues[line_index] if axis == "row" else self.puzzle.column_clues[line_index]
+        clues = (
+            self.puzzle.row_clues[line_index]
+            if axis == "row"
+            else self.puzzle.column_clues[line_index]
+        )
         if type(clue_index) is not int or not 0 <= clue_index < len(clues):
             raise ValueError("İpucu koordinatı geçersiz")
         return clues
@@ -282,6 +303,19 @@ class GameSession:
     def mark_empty(self, x: int, y: int) -> bool:
         return self._change_cell(x, y, CellMark(CellState.EMPTY))
 
+    def mark_note(self, x: int, y: int, enabled: bool = True, *, symbol: str = "") -> bool:
+        if type(enabled) is not bool:
+            raise TypeError("Kalem notu bool olmalı")
+        if self.cell_at(x, y).state is not CellState.UNKNOWN:
+            return False
+        current = self.cell_at(x, y).note_symbol
+        for pair in ("←→", "↑↓"):
+            if enabled and symbol in tuple(pair) and current in (*tuple(pair), pair):
+                symbols = set(current) ^ {symbol}
+                combined = "".join(direction for direction in pair if direction in symbols)
+                return self._change_cell(x, y, CellMark(note=bool(combined), note_symbol=combined))
+        return self._change_cell(x, y, CellMark(note=enabled, note_symbol=symbol if enabled else ""))
+
     def clear_cell(self, x: int, y: int) -> bool:
         return self._change_cell(x, y, CellMark())
 
@@ -382,7 +416,7 @@ class GameSession:
     def _auto_x_changes(self) -> tuple[CellChangeCommand, ...]:
         """Cross only unknown cells forced empty by completed clue constraints."""
         changes: list[CellChangeCommand] = []
-        empty = CellMark(CellState.EMPTY)
+        empty = CellMark(CellState.EMPTY, auto_sources=4)
         while True:
             analysis = analyze_board(self.puzzle, self.cells)
             completed_rows = {
