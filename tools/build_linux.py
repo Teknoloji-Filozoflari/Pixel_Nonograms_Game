@@ -67,6 +67,7 @@ def main():
         run('xvfb-run', '-a', frozen / 'pixel-nonograms', '--smoke-test', env=smoke_env)
 
         notice = frozen / 'THIRD_PARTY_NOTICES.md'
+        shutil.copy2(ROOT / 'LICENSE', frozen / 'LICENSE')
         shutil.copy2(ROOT / 'THIRD_PARTY_NOTICES.md', notice)
         # Preserve bundled dependency licenses, including Qt/Python, beside the executable.
         import importlib.metadata
@@ -134,8 +135,9 @@ def main():
         run('dpkg-deb', '--root-owner-group', '--build', debroot, deb)
         run('dpkg-deb', '--info', deb)
         shutil.copy2(ROOT / 'README_LINUX.md', output / 'README_LINUX.md')
+        shutil.copy2(ROOT / 'LICENSE', output / 'LICENSE')
         shutil.copy2(ROOT / 'THIRD_PARTY_NOTICES.md', output / 'THIRD_PARTY_NOTICES.md')
-        files = [appimage, deb, output / 'README_LINUX.md', output / 'THIRD_PARTY_NOTICES.md']
+        files = [appimage, deb, output / 'LICENSE', output / 'README_LINUX.md', output / 'THIRD_PARTY_NOTICES.md']
         manifest = output / 'SHA256SUMS.txt'
         write(manifest, ''.join(f'{checksum(p)}  {p.name}\n' for p in files))
         archive = output / f'Pixel_Nonograms-{VERSION}-Linux-x86_64.tar.gz'

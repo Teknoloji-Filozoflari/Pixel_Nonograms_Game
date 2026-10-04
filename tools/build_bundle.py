@@ -36,6 +36,7 @@ def main() -> None:
     subprocess.run(command + [str(ROOT / 'packaging/linux/launcher.py')], check=True, cwd=ROOT)
     frozen = output / 'pixel-nonograms'
     validate_resources(frozen)
+    shutil.copy2(ROOT / 'LICENSE', frozen / 'LICENSE')
     shutil.copy2(ROOT / 'THIRD_PARTY_NOTICES.md', frozen / 'THIRD_PARTY_NOTICES.md')
     licenses = frozen / 'licenses'
     licenses.mkdir(exist_ok=True)

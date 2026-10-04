@@ -49,14 +49,14 @@ python3.pkgs.buildPythonApplication {
       "$out/share/applications/pixel-nonograms.desktop"
     install -Dm644 packaging/linux/pixel-nonograms.png \
       "$out/share/icons/hicolor/256x256/apps/pixel-nonograms.png"
+    install -Dm644 LICENSE "$out/share/doc/pixel-nonograms/LICENSE"
     install -Dm644 THIRD_PARTY_NOTICES.md "$out/share/doc/pixel-nonograms/THIRD_PARTY_NOTICES.md"
   '';
   pythonImportsCheck = [ "pixel_nonograms" "pixel_nonograms.app" ];
   meta = {
     description = "Offline picture logic game with 1000 puzzles";
     homepage = "https://github.com/Teknoloji-Filozoflari/Pixel_Nonograms_Game";
-    # No project code license is declared in the repository.
-    license = lib.licenses.unfree;
+    license = lib.licenses.gpl3Plus;
     platforms = lib.platforms.linux;
     mainProgram = "pixel-nonograms";
   };

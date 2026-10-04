@@ -1,4 +1,2 @@
-{ pkgs ? import <nixpkgs> {
-    config.allowUnfreePredicate = pkg: (pkg.pname or "") == "pixel-nonograms";
-  } }:
+{ pkgs ? import <nixpkgs> { } }:
 pkgs.callPackage ./packaging/nix/package.nix { }

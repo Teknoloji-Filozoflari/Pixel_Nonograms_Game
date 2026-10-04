@@ -7,7 +7,7 @@ Name: pixel-nonograms
 Version: %{app_version}
 Release: 1%{?dist}
 Summary: Offline picture logic game with 1000 puzzles
-License: LicenseRef-Unknown
+License: GPL-3.0-or-later
 URL: https://github.com/Teknoloji-Filozoflari/Pixel_Nonograms_Game
 Source0: payload.tar.gz
 Requires: glibc >= 2.42
@@ -18,8 +18,7 @@ Requires: xcb-util-renderutil, xcb-util-wm
 
 %description
 Offline monochrome and color nonograms with five languages and local saves.
-Python and Qt remain in a private bundle. The project has no declared code
-license; existing third-party licenses are included with the application.
+Python and Qt remain in a private bundle. The project is licensed under GPL-3.0-or-later; existing third-party licenses are included with the application.
 
 %prep
 %setup -q -c -T

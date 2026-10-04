@@ -1,6 +1,7 @@
 name: pixel-nonograms
 version: '0.1.1'
 base: core24
+license: GPL-3.0-or-later
 summary: Çevrim dışı nonogram oyunu
 description: |
   1000 siyah beyaz ve renkli bulmaca, beş dil, dahili editör ve yerel kayıt.
@@ -27,6 +28,7 @@ parts:
       _internal: usr/lib/pixel-nonograms/_internal
       pixel-nonograms: usr/lib/pixel-nonograms/pixel-nonograms
       licenses: usr/lib/pixel-nonograms/licenses
+      LICENSE: usr/share/doc/pixel-nonograms/LICENSE
       THIRD_PARTY_NOTICES.md: usr/share/doc/pixel-nonograms/THIRD_PARTY_NOTICES.md
     stage-packages:
       - libegl1

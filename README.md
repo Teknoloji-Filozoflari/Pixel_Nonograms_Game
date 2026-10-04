@@ -118,3 +118,10 @@ Linux packages** dosyaları, kaynak arşivlerini ve ortak SHA-256 listesini yay�
 Yerel komutlar ve hedef sınırlamaları [README_LINUX.md](README_LINUX.md) içindedir.
 
 Üçüncü taraf bileşenler ve bildirimler için [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) dosyasına bakın.
+
+## Lisans
+
+Copyright (c) 2026 Pixel Nonograms contributors.
+
+Proje [GNU GPL 3.0 veya sonraki sürümleri](LICENSE) (`GPL-3.0-or-later`) altında sunulur.
+Üçüncü taraf bileşenler kendi lisanslarını korur; bkz. [bildirimler](THIRD_PARTY_NOTICES.md).

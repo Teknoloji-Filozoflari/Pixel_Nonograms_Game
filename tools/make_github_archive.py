@@ -7,7 +7,7 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRECTORIES = ('src', 'tests', 'tools', 'packaging', 'snap', '.github', 'docs')
-FILES = ('pyproject.toml', 'README.md', 'README_LINUX.md', 'THIRD_PARTY_NOTICES.md',
+FILES = ('LICENSE', 'pyproject.toml', 'README.md', 'README_LINUX.md', 'THIRD_PARTY_NOTICES.md',
          'GELISTIRME_DEVIR.md', 'flake.nix', 'flake.lock', 'default.nix', 'MANIFEST.in', 'Oyunu_Baslat.bat', 'Oyunu_Baslat_Linux.sh',
          '.gitignore', '.gitattributes', '.dockerignore')
 ALLOWED = {'.py', '.json', '.md', '.toml', '.bat', '.sh', '.yml', '.yaml',

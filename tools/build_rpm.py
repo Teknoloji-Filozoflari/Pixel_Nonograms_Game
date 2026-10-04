@@ -21,6 +21,7 @@ def main() -> None:
         stage = top / 'payload'
         shutil.copytree(bundle, stage / 'usr/lib/pixel-nonograms')
         files = {
+            'LICENSE': 'usr/share/doc/pixel-nonograms/LICENSE',
             'packaging/rpm/pixel-nonograms': 'usr/bin/pixel-nonograms',
             'packaging/linux/pixel-nonograms.desktop':
                 'usr/share/applications/pixel-nonograms.desktop',

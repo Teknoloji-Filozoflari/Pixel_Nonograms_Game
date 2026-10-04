@@ -161,9 +161,8 @@ başlatıcısına sarılır. Nix tam PySide6 dağıtımını sağladığından y
 metadata'sında Essentials bağımlılık adı PySide6 olarak eşleştirilir.
 Nix store salt okunurdur; oyuncu kayıtları normal XDG klasörüne yazılır.
 
-Depoda oyun kodu için proje lisansı henüz belirtilmemiştir; bu paketleme işlemi
-bir lisans seçmez. Nix metadata'sı mevcut durumu `unfree` olarak korur;
-flake yalnız bu pakete izin veren `allowUnfreePredicate` kullanır.
+Oyun kodu GNU GPL 3.0 veya sonraki sürümleri (`GPL-3.0-or-later`) altında sunulur.
+Nix metadata'sı `lib.licenses.gpl3Plus` kullanır.
 Üçüncü taraf lisans bildirimleri korunur. Resmî Nixpkgs yayını yapılmadı.
 x86_64 CI build ve kurulu paket açılışı doğrulanır; gerçek NixOS masaüstü veya
 ARM64 kontrolü değildir. aarch64 flake çıktısı tanımlıdır ama doğrulanmamıştır.

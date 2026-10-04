@@ -16,5 +16,5 @@ is retained in the bundle.
 
 Shared libraries remain separate files. AppImage contents can be extracted
 using `--appimage-extract`; Debian installs into `/opt/pixel-nonograms`.
-No new license grant for the game's code or artwork is declared by this
-packaging change. The repository owner may add their chosen project license.
+The project is licensed under GPL-3.0-or-later; see [LICENSE](LICENSE).
+This project license does not replace third-party licenses.

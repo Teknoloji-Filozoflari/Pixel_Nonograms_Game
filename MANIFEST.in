@@ -1,4 +1,4 @@
-include flake.nix flake.lock default.nix README_LINUX.md THIRD_PARTY_NOTICES.md
+include LICENSE flake.nix flake.lock default.nix README_LINUX.md THIRD_PARTY_NOTICES.md
 include GELISTIRME_DEVIR.md Oyunu_Baslat_Linux.sh Oyunu_Baslat.bat
 recursive-include packaging *
 recursive-include snap *.yaml *.sh *.md
