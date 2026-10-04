@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixel-nonograms"
-version = "0.1.0"
+version = "0.1.1"
 description = "Offline Nonogram desktop game"
 requires-python = ">=3.13"
 dependencies = ["PySide6-Essentials>=6.8,<7", "numpy>=2.1,<3", "Pillow>=11,<13"]

@@ -10,3 +10,14 @@ dist/
 build/
 .reference/
 SOURCE_MANIFEST.json
+
+# Generated Linux packages
+*.rpm
+*.snap
+bundle.tar.gz
+parts/
+stage/
+prime/
+.snapcraft/
+result
+result-*

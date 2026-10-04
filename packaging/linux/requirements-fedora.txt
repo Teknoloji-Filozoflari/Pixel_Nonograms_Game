@@ -1,0 +1,6 @@
+# Fedora 43 uses Python 3.14; Qt 6.8 wheels support only Python <3.14.
+PySide6-Essentials==6.11.2
+shiboken6==6.11.2
+numpy==2.5.3
+Pillow==12.3.0
+pyinstaller==6.22.3

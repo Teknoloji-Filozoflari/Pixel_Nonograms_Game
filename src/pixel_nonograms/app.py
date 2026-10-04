@@ -13,6 +13,10 @@ from .ui.branding import StartupSplash, application_icon
 
 
 def main() -> int:
+    if '--smoke-test' in sys.argv:
+        from .distribution_check import main as distribution_main
+
+        return distribution_main()
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
     app.setApplicationName("Pixel Nonograms")

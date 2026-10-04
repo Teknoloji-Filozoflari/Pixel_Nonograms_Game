@@ -6,12 +6,12 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
-DIRECTORIES = ('src', 'tests', 'tools', 'packaging', '.github', 'docs')
+DIRECTORIES = ('src', 'tests', 'tools', 'packaging', 'snap', '.github', 'docs')
 FILES = ('pyproject.toml', 'README.md', 'README_LINUX.md', 'THIRD_PARTY_NOTICES.md',
-         'GELISTIRME_DEVIR.md', 'Oyunu_Baslat.bat', 'Oyunu_Baslat_Linux.sh',
+         'GELISTIRME_DEVIR.md', 'flake.nix', 'flake.lock', 'default.nix', 'MANIFEST.in', 'Oyunu_Baslat.bat', 'Oyunu_Baslat_Linux.sh',
          '.gitignore', '.gitattributes', '.dockerignore')
 ALLOWED = {'.py', '.json', '.md', '.toml', '.bat', '.sh', '.yml', '.yaml',
-           '.png', '.svg', '.desktop', '.txt'}
+           '.png', '.svg', '.desktop', '.txt', '.nix', '.lock', '.spec'}
 
 
 def project_files(root=ROOT):
@@ -20,7 +20,7 @@ def project_files(root=ROOT):
         for path in (root / directory).rglob('*'):
             if (path.is_file() and '__pycache__' not in path.parts
                     and not any(p.endswith('.egg-info') for p in path.parts)
-                    and (path.suffix in ALLOWED or path.name == 'Dockerfile')):
+                    and (path.suffix in ALLOWED or path.name in ('Dockerfile', 'pixel-nonograms'))):
                 paths.append(path)
     return sorted(set(paths))
 

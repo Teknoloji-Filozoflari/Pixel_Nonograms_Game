@@ -1,0 +1,74 @@
+name: pixel-nonograms
+version: '0.1.1'
+base: core24
+summary: Çevrim dışı nonogram oyunu
+description: |
+  1000 siyah beyaz ve renkli bulmaca, beş dil, dahili editör ve yerel kayıt.
+grade: devel
+confinement: strict
+platforms:
+  amd64:
+
+apps:
+  pixel-nonograms:
+    command: bin/pixel-nonograms.sh
+    desktop: usr/share/applications/pixel-nonograms.desktop
+    plugs: [desktop, desktop-legacy, wayland, x11, opengl, home]
+    environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu:$SNAP/lib/x86_64-linux-gnu
+      FONTCONFIG_PATH: $SNAP/etc/fonts
+      FONTCONFIG_FILE: $SNAP/etc/fonts/fonts.conf
+
+parts:
+  game:
+    plugin: dump
+    source: build/bundle/pixel-nonograms
+    organize:
+      _internal: usr/lib/pixel-nonograms/_internal
+      pixel-nonograms: usr/lib/pixel-nonograms/pixel-nonograms
+      licenses: usr/lib/pixel-nonograms/licenses
+      THIRD_PARTY_NOTICES.md: usr/share/doc/pixel-nonograms/THIRD_PARTY_NOTICES.md
+    stage-packages:
+      - libegl1
+      - libgl1
+      - libopengl0
+      - libgl1-mesa-dri
+      - libglib2.0-0t64
+      - libfontconfig1
+      - libfreetype6
+      - libgssapi-krb5-2
+      - fonts-dejavu-core
+      - libdbus-1-3
+      - libx11-6
+      - libx11-xcb1
+      - libxcb1
+      - libxcb-cursor0
+      - libxcb-icccm4
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-render-util0
+      - libxcb-shape0
+      - libxcb-randr0
+      - libxcb-render0
+      - libxcb-shm0
+      - libxcb-sync1
+      - libxcb-xfixes0
+      - libxcb-xinerama0
+      - libxcb-xkb1
+      - libxkbcommon0
+      - libxkbcommon-x11-0
+  launcher:
+    plugin: dump
+    source: snap/local
+    organize:
+      pixel-nonograms.sh: bin/pixel-nonograms.sh
+  desktop:
+    plugin: nil
+    source: .
+    override-build: |
+      install -Dm644 packaging/linux/pixel-nonograms.desktop \
+        "$CRAFT_PART_INSTALL/usr/share/applications/pixel-nonograms.desktop"
+      install -Dm644 packaging/linux/pixel-nonograms.png \
+        "$CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/pixel-nonograms.png"
+      sed -i 's|^Icon=pixel-nonograms$|Icon=${SNAP}/usr/share/icons/hicolor/256x256/apps/pixel-nonograms.png|' \
+        "$CRAFT_PART_INSTALL/usr/share/applications/pixel-nonograms.desktop"

@@ -1,0 +1,9 @@
+include flake.nix flake.lock default.nix README_LINUX.md THIRD_PARTY_NOTICES.md
+include GELISTIRME_DEVIR.md Oyunu_Baslat_Linux.sh Oyunu_Baslat.bat
+recursive-include packaging *
+recursive-include snap *.yaml *.sh *.md
+recursive-include tools *.py
+recursive-include docs *.md *.png
+recursive-include tests *.py
+recursive-include .github *.yml
+global-exclude __pycache__ *.py[cod]
