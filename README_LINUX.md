@@ -17,11 +17,10 @@ gerekir. Varsayılan Qt arayüzü X11/xcb; Wayland oturumunda XWayland gerekir.
 
 ## GitHub'da paketleri üretme
 
-1. **Actions → Linux packages → Run workflow** seçin. `main`/`master` gönderimi
-   veya `v*` etiketi de derlemeyi başlatır.
+1. **Actions → Linux packages → Run workflow** seçin; `v*` etiketi de bu akışı başlatır.
 3. `build` ve `install-test` işleri yeşil olunca **Pixel-Nonograms-Linux-amd64**
    çıktısını indirin.
-4. `v0.1.0` gibi bir sürüm etiketi gönderildiğinde, başarılı kurulum testlerinden
+4. `v0.1.1` gibi bir sürüm etiketi gönderildiğinde, başarılı kurulum testlerinden
    sonra `.AppImage`, `.deb`, `SHA256SUMS.txt` ve birleşik `.tar.gz` otomatik
    olarak GitHub Releases'e eklenir.
 
@@ -34,20 +33,20 @@ Derleme internet ister; oyunun çalışması internet gerektirmez.
 Arşivi çıkarıp çalıştırın:
 
 ```sh
-chmod +x Pixel_Nonograms-0.1.0-x86_64.AppImage
-./Pixel_Nonograms-0.1.0-x86_64.AppImage
+chmod +x Pixel_Nonograms-0.1.1-x86_64.AppImage
+./Pixel_Nonograms-0.1.1-x86_64.AppImage
 ```
 
 FUSE yoksa:
 
 ```sh
-APPIMAGE_EXTRACT_AND_RUN=1 ./Pixel_Nonograms-0.1.0-x86_64.AppImage
+APPIMAGE_EXTRACT_AND_RUN=1 ./Pixel_Nonograms-0.1.1-x86_64.AppImage
 ```
 
 ### Debian / Pardus
 
 ```sh
-sudo apt install ./pixel-nonograms_0.1.0_amd64.deb
+sudo apt install ./pixel-nonograms_0.1.1_amd64.deb
 ```
 
 Uygulama menüsünden **Piksel Nonogram**'ı açın veya `pixel-nonograms` çalıştırın.
@@ -95,3 +94,90 @@ Oyuncular için Python istemeyen AppImage/.deb tercih edilir.
 Kaynaklar: [PyInstaller](https://pyinstaller.org/en/stable/usage.html),
 [AppImage](https://github.com/AppImage/appimagetool),
 [Pardus sürümleri](https://pardus.org.tr/en/version-management/).
+
+## RPM — Fedora 43
+
+```sh
+sudo dnf install ./pixel-nonograms-0.1.1-1.fc43.x86_64.rpm
+```
+
+Fedora 43 x86_64 / glibc 2.42+ hedeflenir. Python 3.14, Qt 6.11, NumPy ve
+Pillow özel `/usr/lib/pixel-nonograms` bundle'ındadır. Sistem kütüphaneleri
+RPM spec içinde tanımlıdır; özel bundle sistem Provides/Requires'a karışmaz.
+Diğer RPM dağıtımları ve eski Fedora ayrıca doğrulanmalıdır. Paket kaldırma
+oyuncunun XDG kayıtlarını silmez.
+
+Fedora build ortamında, workflow'daki rpmbuild/Qt/XCB bağımlılıkları kurulduktan sonra:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -c packaging/linux/requirements-fedora.txt '.[dev]' PyInstaller
+.venv/bin/python tools/build_bundle.py
+.venv/bin/python tools/build_rpm.py
+```
+
+## Snap — core24 amd64
+
+GitHub'dan indirilen Store imzası olmayan paketi kurmak için:
+
+```sh
+sudo snap install --dangerous ./pixel-nonograms_0.1.1_amd64.snap
+pixel-nonograms
+```
+
+Strict confinement ve `grade: devel` kullanılır; Snap Store yayını yoktur.
+Oyun çevrim dışıdır; network interface'i tanımlanmaz. Görsel içe aktarma için
+home interface'i kullanılır; gizli klasörlere genel erişim vermez.
+Kayıtlar sistem kurulumundan ayrı `~/snap/pixel-nonograms/common/data/Pixel Nonograms`
+altında tutulur. Kayıt taşırken oyun kapalı olmalı ve önce veri klasörü yedeklenmelidir.
+
+Üretim önce Ubuntu 22.04/Python 3.13 üzerinde Qt 6.8.3 bundle'ını
+`build/bundle/pixel-nonograms` altında doğrular, ardından Snapcraft bunu core24'e alır.
+Yerel üretimde de bundle hazırlandıktan sonra `snapcraft` çalıştırılır.
+Base sistemin Python 3.12'sine oyun kurulmaz.
+
+## Nix / NixOS
+
+Flake desteği etkin Nix ile:
+
+```sh
+nix run github:Teknoloji-Filozoflari/Pixel_Nonograms_Game/v0.1.1
+nix profile install github:Teknoloji-Filozoflari/Pixel_Nonograms_Game/v0.1.1
+```
+
+NixOS'ta gerektiğinde `nix.settings.experimental-features = [ "nix-command" "flakes" ];`
+etkinleştirilir. Sistem flake'ine
+`inputs.nonograms.url = "github:Teknoloji-Filozoflari/Pixel_Nonograms_Game/v0.1.1";`
+eklenip `nonograms.packages.x86_64-linux.default` sistem veya Home Manager paketlerine alınabilir.
+
+```sh
+nix build
+nix flake check --print-build-logs
+./result/bin/pixel-nonograms
+```
+
+Nixpkgs 25.11 revizyonu `flake.lock` ile sabitlenir. Qt yolları Python
+başlatıcısına sarılır. Nix tam PySide6 dağıtımını sağladığından yalnız Nix build
+metadata'sında Essentials bağımlılık adı PySide6 olarak eşleştirilir.
+Nix store salt okunurdur; oyuncu kayıtları normal XDG klasörüne yazılır.
+
+Depoda oyun kodu için proje lisansı henüz belirtilmemiştir; bu paketleme işlemi
+bir lisans seçmez. Nix metadata'sı mevcut durumu `unfree` olarak korur;
+flake yalnız bu pakete izin veren `allowUnfreePredicate` kullanır.
+Üçüncü taraf lisans bildirimleri korunur. Resmî Nixpkgs yayını yapılmadı.
+x86_64 CI build ve kurulu paket açılışı doğrulanır; gerçek NixOS masaüstü veya
+ARM64 kontrolü değildir. aarch64 flake çıktısı tanımlıdır ama doğrulanmamıştır.
+
+## Doğrulanmış paketlerle yayın
+
+`Publish verified Linux packages` workflow'u Linux build/DEB kurulum,
+AppImage temiz Ubuntu kontrolü, RPM, Snap ve Nix koşularının tamamının başarılı
+olmasını zorunlu tutar. AppImage, DEB, RPM, Snap, Python wheel/sdist ve temiz
+GitHub kaynak ZIP'i ortak `SHA256SUMS.txt` ile aynı sürüme yüklenir.
+AUR işlemi yapılmaz; mevcut v0.1.0 sürümü korunur.
+
+AppImage temiz Ubuntu 24.04 üzerinde, DEB Debian 12/13 üzerinde,
+RPM Fedora 43 ve strict Snap Ubuntu 24.04/snapd ortamında kontrol edilir.
+X11 testleri Xvfb kullanır; fiziksel ekran sürücüsü testi değildir.
+Her açılış kontrolü Qt arayüzü, 1.000 bulmaca, beş dil, SQLite save/load ve
+tam ekran davranışını geçici kayıtlarla sınar.

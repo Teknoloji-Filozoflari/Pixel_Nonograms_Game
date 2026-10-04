@@ -46,7 +46,20 @@
 
 ## Kurulum
 
-**Linux x86_64 / amd64:** [Releases sayfasından](https://github.com/Teknoloji-Filozoflari/Pixel_Nonograms_Game/releases) sürüme ait AppImage veya `.deb` dosyasını indirin. Yayın henüz yoksa [Actions → Linux packages](https://github.com/Teknoloji-Filozoflari/Pixel_Nonograms_Game/actions/workflows/linux-packages.yml) sayfasındaki başarılı çalışmanın `Pixel-Nonograms-Linux-amd64` çıktısını kullanın.
+**[v0.1.1 Linux paketlerini indir](https://github.com/Teknoloji-Filozoflari/Pixel_Nonograms_Game/releases/tag/v0.1.1).**
+
+| Biçim | Hedef | Kurulum |
+|---|---|---|
+| AppImage | x86_64 Linux, glibc 2.36+ | Dosyaya çalıştırma izni verip aç |
+| DEB | Debian 12/13 amd64 | `sudo apt install ./pixel-nonograms_0.1.1_amd64.deb` |
+| RPM | Fedora 43 x86_64 | `sudo dnf install ./pixel-nonograms-0.1.1-1.fc43.x86_64.rpm` |
+| Snap | snapd bulunan amd64 Linux | `sudo snap install --dangerous ./pixel-nonograms_0.1.1_amd64.snap` |
+| Nix / NixOS | x86_64 Linux | `nix run github:Teknoloji-Filozoflari/Pixel_Nonograms_Game/v0.1.1` |
+| Wheel / kaynak ZIP | Python 3.13+ | Sürüm sayfasından indir |
+
+Paketler 1.000 bulmacayı ve beş dilin çevirilerini içerir. `SHA256SUMS.txt`
+indirilen dosyaların bütünlüğünü kontrol etmek içindir. Snap Store, AUR ve
+resmî Nixpkgs yayını yapılmamıştır; Snap dosyası GitHub'dan yerel kurulum içindir.
 
 AppImage için:
 
@@ -98,6 +111,10 @@ python -m venv .venv
 .venv/bin/python -m pixel_nonograms
 ```
 
-Linux paketleri Debian 12 tabanlı Docker ortamında üretilir. `main` dalına gönderimler ve `v*` etiketleri [CI iş akışını](.github/workflows/linux-packages.yml) çalıştırır. Etiket başarılı olduğunda AppImage, DEB, SHA-256 listesi ve birleşik arşiv GitHub Releases'e eklenir. Yerel derleme komutları [README_LINUX.md](README_LINUX.md) içindedir.
+AppImage ve DEB Debian 12 tabanlı Docker ortamında üretilir. RPM Fedora 43,
+Snap core24 ve Nix kaynak tabanlı ayrı iş akışlarını kullanır. Paket iş akışları
+Actions üzerinden başlatılır; tüm kontroller başarılı olunca **Publish verified
+Linux packages** dosyaları, kaynak arşivlerini ve ortak SHA-256 listesini yayımlar.
+Yerel komutlar ve hedef sınırlamaları [README_LINUX.md](README_LINUX.md) içindedir.
 
 Üçüncü taraf bileşenler ve bildirimler için [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) dosyasına bakın.

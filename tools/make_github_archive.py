@@ -37,7 +37,7 @@ def main():
             data = path.read_bytes()
             info = ZipInfo(prefix + name)
             info.create_system = 3
-            info.external_attr = ((0o100755 if path.suffix == '.sh' else 0o100644) << 16)
+            info.external_attr = ((0o100755 if path.suffix == '.sh' or path.name == 'pixel-nonograms' else 0o100644) << 16)
             info.compress_type = ZIP_DEFLATED
             archive.writestr(info, data)
             manifest[name] = hashlib.sha256(data).hexdigest()

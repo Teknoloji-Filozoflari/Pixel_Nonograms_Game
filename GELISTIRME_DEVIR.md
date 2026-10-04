@@ -129,3 +129,57 @@ ve görevlerden daha güçlü ödüller alma döngüsü korunmalı.
 Arşiv hazırlanırken kullanılan ortam: Python 3.13.15, PySide6-Essentials 6.11.2,
 shiboken6 6.11.2, NumPy 2.5.3, Pillow 12.3.0, pytest 9.1.1, Ruff 0.16.9.
 Kurulum bağımlılık aralıkları `pyproject.toml` içindedir.
+
+
+## Linux paketlerini doğrulama ve yayın — 4 Ekim 2026
+
+### Yapılanlar
+
+Mevcut v0.1.0 korunarak 0.1.1 hazırlandı. AppImage/DEB'e ek olarak Fedora 43
+RPM, core24 strict Snap ve Nix/NixOS flake eklendi. Kaynaktan ve Nix paketinden
+çalıştırmada --smoke-test desteği mevcut dağıtım kontrolüne yönlendirilir.
+Oyun davranışı, bulmaca kimlikleri ve oyuncu ilerlemesi değiştirilmedi.
+
+### Değiştirilen önemli dosyalar
+
+- tools/build_bundle.py ve build_rpm.py, RPM spec/başlatıcı.
+- snap/, packaging/nix/, flake.nix/lock/default.nix, MANIFEST.in.
+- Linux, RPM, Snap, Nix, temiz AppImage kontrolü ve doğrulanmış yayın workflow'ları.
+- app.py CLI kontrolü, dört eksik kaynak paketleme testi.
+- README/README_LINUX, kaynak ZIP betiği ve v0.1.1 release notları.
+
+### Test sonucu
+
+Yerelde Ruff ve 377 pytest başarılı. Kaynak CLI açılış kontrolü başarılı:
+Qt arayüzü, 1.000 bulmaca, beş dil, SQLite save/load ve tam ekran.
+Workflow YAML/shell syntax, temiz kaynak ZIP, Nix/Snap/RPM kaynaklarının
+ZIP'e dahil olması ve RPM başlatıcı çalıştırma izni doğrulandı.
+
+Başarılı GitHub doğrulamaları:
+- AppImage/DEB build ve Debian 12/13 kurulum: 37217549655.
+- Temiz Ubuntu 24.04 AppImage offscreen/X11: 37218086696.
+- Fedora 43 RPM offscreen/X11 kurulum: 37217551508.
+- Nix x86_64 build, 377 test ve kurulu wrapper offscreen: 37217660664.
+- Snap build ve strict offscreen/X11 kurulum: 37217553499.
+
+### Manuel kontrol
+
+Paket açılış kontrolleri gerçek Qt arayüzünü geçici kayıtlarla sınar;
+X11 için sanal Xvfb kullanılır. Yayın workflow'u bütün başarılı koşuları
+zorunlu tutar; AppImage/DEB/RPM/Snap, wheel/sdist, temiz kaynak ZIP ve ortak
+SHA256SUMS.txt sürüm sayfasına yüklenir. Eski build arşivinin yerine güncel
+kurulum belgeleri ve ayrı doğrulanmış paketler yayımlanır.
+
+### Bilinen sorunlar
+
+AUR, Snap Store ve resmî Nixpkgs yayını yoktur. Snap devel/strict ve yerel
+--dangerous kurulumu kullanır; kayıtları SNAP_USER_COMMON altında ayrıdır.
+AppImage/DEB glibc 2.36+, Fedora 43 RPM glibc 2.42+ hedefler.
+Gerçek Pardus, NixOS masaüstü ve ARM64 testi yapılmadı.
+Proje kod lisansı depoda belirtilmemiştir; yeni lisans seçilmedi. RPM bunu
+LicenseRef-Unknown, Nix unfree olarak korur; flake yalnız bu pakete izin verir.
+Üçüncü taraf lisansları paketlerde saklanır.
+
+### Sonraki faz
+
+Kullanıcının sonraki isteği.

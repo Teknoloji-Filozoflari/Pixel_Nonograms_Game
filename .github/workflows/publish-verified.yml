@@ -1,0 +1,107 @@
+name: Publish verified Linux packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      linux_run:
+        description: Successful Linux packages build/install run ID
+        required: true
+        type: string
+      appimage_run:
+        description: Successful clean AppImage desktop check run ID
+        required: true
+        type: string
+      rpm_run:
+        description: Successful RPM build and install run ID
+        required: true
+        type: string
+      snap_run:
+        description: Successful Snap build and install run ID
+        required: true
+        type: string
+      nix_run:
+        description: Successful Nix build and smoke run ID
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: publish-verified-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Require successful package checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_IDS: ${{ inputs.linux_run }} ${{ inputs.appimage_run }} ${{ inputs.rpm_run }} ${{ inputs.snap_run }} ${{ inputs.nix_run }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for run_id in $RUN_IDS; do
+            [[ "$run_id" =~ ^[0-9]+$ ]]
+            test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" --jq .conclusion)" = success
+          done
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.linux_run }}
+          name: Pixel-Nonograms-Linux-amd64
+          github-token: ${{ github.token }}
+          path: release-assets
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.rpm_run }}
+          name: pixel-nonograms-rpm-x86_64
+          github-token: ${{ github.token }}
+          path: release-assets
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.snap_run }}
+          name: pixel-nonograms-snap-amd64
+          github-token: ${{ github.token }}
+          path: release-assets
+      - name: Build clean Python and source packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd release-assets && sha256sum --check SHA256SUMS.txt)
+          python -m pip install build
+          python -m build --outdir /tmp/python-packages
+          python tools/make_github_archive.py
+          cp /tmp/python-packages/* release-assets/
+          cp dist/Pixel_Nonograms_GitHub_*.zip release-assets/
+          cp README_LINUX.md THIRD_PARTY_NOTICES.md release-assets/
+          python - <<'PYCODE'
+          from pathlib import Path
+          for archive in Path("release-assets").glob("Pixel_Nonograms-*-Linux-x86_64.tar.gz"):
+              archive.unlink()
+          PYCODE
+          version=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+          test -f "docs/release-notes/v$version.md"
+          test -f "release-assets/Pixel_Nonograms-$version-x86_64.AppImage"
+          test -f "release-assets/pixel-nonograms_${version}_amd64.deb"
+          test -f "release-assets/pixel-nonograms-$version-1.fc43.x86_64.rpm"
+          test -f "release-assets/pixel-nonograms_${version}_amd64.snap"
+          cd release-assets
+          find . -maxdepth 1 -type f ! -name 'SHA256SUMS*' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+      - name: Publish verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+          gh release create "v$version" --target "$GITHUB_SHA" --draft \
+            --title "Piksel Nonogram v$version" --notes-file "docs/release-notes/v$version.md" \
+            release-assets/*
+          gh release edit "v$version" --draft=false --latest
