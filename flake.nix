@@ -8,7 +8,10 @@
       systems = [ "x86_64-linux" "aarch64-linux" ];
       eachSystem = nixpkgs.lib.genAttrs systems;
       packageFor = system:
-        let pkgs = import nixpkgs { inherit system; };
+        let pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfreePredicate = pkg: (pkg.pname or "") == "pixel-nonograms";
+        };
         in pkgs.callPackage ./packaging/nix/package.nix { };
     in {
       packages = eachSystem (system: {
@@ -24,7 +27,10 @@
       });
 
       checks = eachSystem (system:
-        let pkgs = import nixpkgs { inherit system; };
+        let pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfreePredicate = pkg: (pkg.pname or "") == "pixel-nonograms";
+        };
         in {
           package = self.packages.${system}.pixel-nonograms;
           smoke = pkgs.runCommand "pixel-nonograms-installed-smoke" {
